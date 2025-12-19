@@ -49,7 +49,6 @@
 #'   fx = mean,
 #'   cols = c(
 #'     "time" = "seconds",
-#'     "id" = "tag",
 #'     "x" = "X",
 #'     "y" = "Y"
 #'   ),
@@ -63,47 +62,16 @@ bin <- function(data,
                 cols = NULL,
                 .by = NULL) {
 
-    # Check whether a dataframe is provided. If not, throw an error
-    if(!is.data.frame(data)) {
-        stop("Argument `data` should contain a data.frame.")
-    }
+    # Prepare the data for the analysis
+    preparation <- prepare(
+        data,
+        cols = cols,
+        .by = .by
+    )
 
-    # If column names are provided, temporarily change the column names to the 
-    # default ones. If no column names are provided, then we use the default 
-    # ones.
-    if(!is.null(cols)) {
-        # Check whether the correct names are provided to the vector
-        if(!all(c("time", "x", "y") %in% names(cols))) {
-            stop(
-                paste(
-                    "Names of the `cols` argument does not contain the required names.", 
-                    "Please make sure the labels are 'time', 'x', and 'y' or change your data's column names."
-                )
-            )
-        }
-    } else {
-        cols <- c(
-            "time" = "time",
-            "x" = "x",
-            "y" = "y"
-        )
-    }
-
-    # Check whether there is a grouping variable to account for. If not, then 
-    # we just use a dummy
-    if(!is.null(.by)) {
-        group <- unique(data[, .by])
-        cols["id"] <- .by
-    } else {
-        data$id <- 1
-        group <- 1
-
-        cols["id"] <- "id"
-    }
-
-    # Select the columns of interest
-    data <- data[, cols] |>
-        `colnames<-` (names(cols))
+    cols <- preparation$cols
+    group <- preparation$group
+    data <- preparation$data
 
     # Instantiate a mock data.frame. Will be updated repeatedly in the loops
     mock <- data.frame(
@@ -163,14 +131,11 @@ bin <- function(data,
     )
     data <- do.call("rbind", data)
 
-    # Change the column names back
-    data <- data[, names(cols)] |>
-        `colnames<-` (cols)
-
-    # Remove the id-column if the .by argument was not defined
-    if(is.null(.by)) {
-        data$id <- NULL
-    }
-
-    return(data)
+    return(
+        finalize(
+            data,
+            cols = cols,
+            .by = .by
+        )
+    )
 }
