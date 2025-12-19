@@ -1,0 +1,33 @@
+Package: denoiser
+Type: Package
+Title: Noising and denoising spatial data
+Version: 0.1.0
+Date: 2025-12-19
+Author@R: person(
+    "Niels", 
+    "Vanhasbroeck", 
+    email = "niels.vanhasbroeck@gmail.com",
+    role = c("aut", "cre"),
+    comment = c(ORCID = 0000-0002-7423-0090))
+Maintainer: Niels Vanhasbroeck <niels.vanhasbroeck@gmail.com>
+Description: 
+    Noiser and denoiser functions to be used for preprocessing spatial data. 
+    Based on the calibration project of the M4MA team.
+License: GPL-3 + file LICENSE
+Encoding: UTF-8
+Imports: 
+    Rcpp (>= 1.0.14)
+LinkingTo: Rcpp, RcppArmadillo
+RoxygenNote: 7.3.2
+Collate:
+    'denoiser-package.R'
+    'bin.R'
+    'kalman_filter.R'
+    'noiser.R'
+    'denoiser.R'
+Suggests: 
+    fs,
+    testthat (>= 3.0.0)
+Remotes:
+Config/testthat/edition: 3
+VignetteBuilder: knitr
