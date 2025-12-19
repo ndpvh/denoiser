@@ -49,14 +49,14 @@
 finalize <- function(data, 
                      cols = NULL,
                      .by = NULL) {
-    
+
     # Change the column names back
     data <- data[, names(cols)] |>
         `colnames<-` (cols)
 
     # Remove the id-column if the .by argument was not defined
     if(is.null(.by)) {
-        data$id <- NULL
+        data[, cols["id"]] <- NULL
     }
 
     return(data)
