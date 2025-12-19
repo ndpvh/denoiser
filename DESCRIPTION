@@ -16,8 +16,6 @@ Description:
 License: GPL-3 + file LICENSE
 Encoding: UTF-8
 Imports: 
-    Rcpp (>= 1.0.14)
-LinkingTo: Rcpp, RcppArmadillo
 RoxygenNote: 7.3.2
 Collate:
     'denoiser-package.R'
