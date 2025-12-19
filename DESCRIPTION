@@ -19,6 +19,8 @@ Imports:
 RoxygenNote: 7.3.2
 Collate:
     'denoiser-package.R'
+    'prepare.R'
+    'finalize.R'
     'bin.R'
     'kalman_filter.R'
     'noiser.R'
