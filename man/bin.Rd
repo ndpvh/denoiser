@@ -53,7 +53,7 @@ user may supply.
 data <- data.frame(
   X = rnorm(100),
   Y = rnorm(100),
-  seconds = rep(1:50, times = 2) / 10
+  seconds = rep(1:50, times = 2) / 10,
   tag = rep(1:2, each = 50)
 )
 

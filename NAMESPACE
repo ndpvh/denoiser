@@ -3,4 +3,3 @@
 export(bin)
 exportPattern("^[[:alpha:]]+")
 importFrom(Rcpp,evalCpp)
-useDynLib(denoiser)
