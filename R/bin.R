@@ -13,11 +13,10 @@
 #' user may supply.
 #' 
 #' @param data Dataframe that contains information on location (x- and 
-#' y-coordinates) and id of a measured tag, as well as the time at which the 
-#' measurement was taken. By default, [bin()] will assume that this information
-#' is contained within the columns `"x"`, `"y"`, `"id"`, and `"time"` 
-#' respectively. If this isn't the case, either change the column names in the
-#' data or specify the `cols` argument.
+#' y-coordinates) and the time at which the measurement was taken. By default, 
+#' [kalman_filter()] will assume that this information is contained within the 
+#' columns `"x"`, `"y"`, and `"time"` respectively. If this isn't the case, 
+#' either change the column names in the data or specify the `cols` argument.
 #' @param span Numeric denoting the size of the bins. Will pertain to the values
 #' in the `time` variable. Defaults to `0.5`.
 #' @param fx Function to execute on the data that falls within the bin. Will be
@@ -25,7 +24,7 @@
 #' value. Defaults to the function [mean()].
 #' @param cols Named vector or named list containing the relevant column names
 #' in 'data' if they didn't contain the prespecified column names `"time"`, 
-#' `"id"`, `"x"`, and `"y"`. The labels should conform to these prespecified 
+#' `"x"`, and `"y"`. The labels should conform to these prespecified 
 #' column names and the values given to these locations should contain the 
 #' corresponding column names in that dataset. Defaults to `NULL`, therefore 
 #' assuming the structure explained in `data`.
