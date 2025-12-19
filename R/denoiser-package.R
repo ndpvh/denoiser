@@ -6,7 +6,7 @@
 "_PACKAGE"
 
 ## usethis namespace: start
-#' @useDynLib denoiser
+# ' @useDynLib denoiser
 #' @importFrom Rcpp evalCpp
 #' @exportPattern "^[[:alpha:]]+"
 ## usethis namespace: end
