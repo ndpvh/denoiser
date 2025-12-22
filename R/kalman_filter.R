@@ -171,8 +171,8 @@ kalman_filter <- function(data,
                     # These parameters are F (the deterministic movement) and 
                     # W (the expected stochastic noise around this movement), 
                     # both of which depend on the time between observations.
-                    F <- parameters[["F"]](z$Delta_t[i])
-                    W <- parameters[["W"]](z$Delta_t[i])
+                    F <- parameters[["F"]](z$delta_t[i])
+                    W <- parameters[["W"]](z$delta_t[i])
 
                     # Perform the prediction itself.
                     prediction <- kf_predict(
