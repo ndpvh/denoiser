@@ -232,10 +232,17 @@ kalman_filter <- function(data,
             return(data_x)
         }
     )
+
     data <- do.call("rbind", data)   
 
     # Finalize and return the data
-    return(finalize(data))
+    return(
+        finalize(
+            data,
+            cols = cols, 
+            .by = .by
+        )
+    )
 }
 
 
