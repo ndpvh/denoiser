@@ -31,7 +31,7 @@
 #' # pace of 1.27m/s with some added noise of SD = 10cm.
 #' angles <- seq(0, 4 * pi, length.out = 100)
 #' coordinates <- 10 * cbind(cos(angles), sin(angles))
-#' coordinates <- coordines + rnorm(200, mean = 0, sd = 0.1)
+#' coordinates <- coordinates + rnorm(200, mean = 0, sd = 0.1)
 #' 
 #' data <- data.frame(
 #'   X = coordinates[, 1],
