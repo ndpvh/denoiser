@@ -22,6 +22,7 @@ Collate:
     'prepare.R'
     'finalize.R'
     'bin.R'
+    'kalman_models.R'
     'kalman_filter.R'
     'noiser.R'
     'denoiser.R'
