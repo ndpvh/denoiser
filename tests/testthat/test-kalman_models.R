@@ -10,6 +10,7 @@ test_that(
     "Test output of constant velocity model",
     {
         # Create test data with known properties. Linear movement
+        set.seed(1)
         data <- data.frame(
             time = 1:100,
             x = 1:100,
