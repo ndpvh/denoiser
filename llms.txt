@@ -26,11 +26,11 @@ repository of which you can find
 
 You can install the package from Github through the command:
 
-`{r, eval = FALSE} remotes::install_github("ndpvh/denoiser")`
+`{r} remotes::install_github("ndpvh/denoiser")`
 
 Once installed, you can load the package through the `library` function.
 
-`{r, eval = FALSE} library(denoiser)`
+`{r} library(denoiser)`
 
 ### Usage
 
@@ -38,10 +38,9 @@ The primary functionality of this package is provided through two
 functions, namely `noiser` and `denoiser`. Imagine that we have data
 that contains circular movement, such as in the following case:
 
-\`\`\`{r, eval = FALSE} \# Create x- and y-coordinates for a person
-walking in a full circle angles \<- seq(0, 2 \* pi, length.out = 50)
-data \<- data.frame( time = 1:50, x = 10 \* cos(angles), y = 10 \*
-sin(angles) )
+\`\`\`{r} \# Create x- and y-coordinates for a person walking in a full
+circle angles \<- seq(0, 2 \* pi, length.out = 50) data \<- data.frame(
+time = 1:50, x = 10 \* cos(angles), y = 10 \* sin(angles) )
 
 # Plot these data
 
@@ -49,7 +48,7 @@ plot(data$x,data$y)
 
     Then we can add ``realistic'' noise to these data by using the `noiser` function. Specifically, we call:
 
-    ```{r, eval = FALSE}
+    ```{r}
     # Noise up the data
     noised_up <- noiser(
         data
@@ -60,8 +59,7 @@ plot(data$x,data$y)
 
 To decrease the noise again, we call the `denoiser` function:
 
-\`\`\`{r, eval = FALSE} \# Denoise the data denoised \<- denoiser( data
-)
+\`\`\`{r} \# Denoise the data denoised \<- denoiser( data )
 
 # Plot the denoised data
 

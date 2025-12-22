@@ -71,15 +71,15 @@
 <h3 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h3>
 <p>You can install the package from Github through the command:</p>
-<p><code>{r, eval = FALSE} remotes::install_github("ndpvh/denoiser")</code></p>
+<p><code>{r} remotes::install_github("ndpvh/denoiser")</code></p>
 <p>Once installed, you can load the package through the <code>library</code> function.</p>
-<p><code>{r, eval = FALSE} library(denoiser)</code></p>
+<p><code>{r} library(denoiser)</code></p>
 </div>
 <div class="section level3">
 <h3 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
 </h3>
 <p>The primary functionality of this package is provided through two functions, namely <code>noiser</code> and <code>denoiser</code>. Imagine that we have data that contains circular movement, such as in the following case:</p>
-<p>```{r, eval = FALSE} # Create x- and y-coordinates for a person walking in a full circle angles &lt;- seq(0, 2 * pi, length.out = 50) data &lt;- data.frame( time = 1:50, x = 10 * cos(angles), y = 10 * sin(angles) )</p>
+<p>```{r} # Create x- and y-coordinates for a person walking in a full circle angles &lt;- seq(0, 2 * pi, length.out = 50) data &lt;- data.frame( time = 1:50, x = 10 * cos(angles), y = 10 * sin(angles) )</p>
 </div>
 </div>
 </div>
@@ -90,7 +90,7 @@
 <pre><code>
 Then we can add ``realistic'' noise to these data by using the `noiser` function. Specifically, we call:
 
-```{r, eval = FALSE}
+```{r}
 # Noise up the data
 noised_up &lt;- noiser(
     data
@@ -99,7 +99,7 @@ noised_up &lt;- noiser(
 # Plot the noised up data
 plot(noised_up$x, noised_up$y)</code></pre>
 <p>To decrease the noise again, we call the <code>denoiser</code> function:</p>
-<p>```{r, eval = FALSE} # Denoise the data denoised &lt;- denoiser( data )</p>
+<p>```{r} # Denoise the data denoised &lt;- denoiser( data )</p>
 </div>
 <div class="section level1">
 <h1 id="plot-the-denoised-data">Plot the denoised data<a class="anchor" aria-label="anchor" href="#plot-the-denoised-data"></a>
