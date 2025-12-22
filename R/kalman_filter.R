@@ -19,6 +19,8 @@
 #' assuming the structure explained in `data`.
 #' @param .by String denoting whether the moving window should be taken with 
 #' respect to a given grouping variable. Defaults to `NULL`.
+#' @param N_min Integer denoting the minimum number of datapoints that are 
+#' needed to use the Kalman filter. Defaults to \code{5}.
 #' @param ... Additional arguments provided to the loaded model. For more 
 #' information, see [constant_velocity].
 #' 
@@ -27,7 +29,6 @@
 #' @examples 
 #' # Generate data for illustration purposes. Movement in circular motion at a
 #' # pace of 1.27m/s with some added noise of SD = 10cm.
-#' # some added noise
 #' angles <- seq(0, 4 * pi, length.out = 100)
 #' coordinates <- 10 * cbind(cos(angles), sin(angles))
 #' coordinates <- coordines + rnorm(200, mean = 0, sd = 0.1)
@@ -64,6 +65,7 @@ kalman_filter <- function(data,
                           model = "constant_velocity",
                           cols = NULL,
                           .by = NULL,
+                          N_min = 5,
                           ...) {
 
     # Prepare the data for the analysis
@@ -92,23 +94,21 @@ kalman_filter <- function(data,
         group, 
         function(x) nrow(data[data$id == x, ])
     )
-    if(any(check <= 5)) {
+    if(any(check <= N_min)) {
         warning(
             paste(
                 "Some of the data contain too few datapoints to perform the Kalman filter.",
                 "Returning the data as-is for", 
-                sum(check <= 5), 
                 ifelse(
                     is.null(.by),
                     "this dataset.",
                     paste(
-                        sum(check <= 5),
+                        sum(check <= N_min),
                         "datasets defined through the `.by` argument."
                     )
                 )
             )
         )
-        return(data)
     }
 
     # Perform the Kalman filter for each group
@@ -117,6 +117,12 @@ kalman_filter <- function(data,
         function(x) {
             # Select the data of interest
             data_x <- data[data$id == x, ]
+
+            # If there are less than N_min datapoints, then we just return the 
+            # data as is
+            if(nrow(data_x) <= N_min) {
+                return(data_x)
+            }
 
             # Apply the model for these data and extract the parameters to be 
             # used. Specifically:
