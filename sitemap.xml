@@ -1,0 +1,18 @@
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://github.com/ndpvh/denoiser/404.html</loc></url>
+<url><loc>https://github.com/ndpvh/denoiser/LICENSE-text.html</loc></url>
+<url><loc>https://github.com/ndpvh/denoiser/authors.html</loc></url>
+<url><loc>https://github.com/ndpvh/denoiser/index.html</loc></url>
+<url><loc>https://github.com/ndpvh/denoiser/reference/bin.html</loc></url>
+<url><loc>https://github.com/ndpvh/denoiser/reference/constant_velocity.html</loc></url>
+<url><loc>https://github.com/ndpvh/denoiser/reference/denoiser-package.html</loc></url>
+<url><loc>https://github.com/ndpvh/denoiser/reference/finalize.html</loc></url>
+<url><loc>https://github.com/ndpvh/denoiser/reference/index.html</loc></url>
+<url><loc>https://github.com/ndpvh/denoiser/reference/kalman_filter.html</loc></url>
+<url><loc>https://github.com/ndpvh/denoiser/reference/kalman_models.html</loc></url>
+<url><loc>https://github.com/ndpvh/denoiser/reference/kf_innovation.html</loc></url>
+<url><loc>https://github.com/ndpvh/denoiser/reference/kf_predict.html</loc></url>
+<url><loc>https://github.com/ndpvh/denoiser/reference/kf_update.html</loc></url>
+<url><loc>https://github.com/ndpvh/denoiser/reference/prepare.html</loc></url>
+</urlset>
+

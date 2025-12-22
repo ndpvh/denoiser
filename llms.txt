@@ -1,0 +1,28 @@
+# denoiser
+
+Noiser and denoiser functions to be used for preprocessing spatial data.
+Based on the calibration project of the M4MA team.
+
+# Package index
+
+## All functions
+
+- [`bin()`](https://github.com/ndpvh/denoiser/reference/bin.md) : Bin
+  observations
+- [`constant_velocity()`](https://github.com/ndpvh/denoiser/reference/constant_velocity.md)
+  : Constant velocity model
+- [`finalize()`](https://github.com/ndpvh/denoiser/reference/finalize.md)
+  : Finalize data after analysis
+- [`kalman_filter()`](https://github.com/ndpvh/denoiser/reference/kalman_filter.md)
+  : Smooth using a Kalman filter
+- [`kalman_models`](https://github.com/ndpvh/denoiser/reference/kalman_models.md)
+  : List of Kalman filter models
+- [`kf_innovation()`](https://github.com/ndpvh/denoiser/reference/kf_innovation.md)
+  : Innovation step in the Kalman filter
+- [`kf_predict()`](https://github.com/ndpvh/denoiser/reference/kf_predict.md)
+  : Prediction step in the Kalman filter
+- [`kf_update()`](https://github.com/ndpvh/denoiser/reference/kf_update.md)
+  : Updating step in the Kalman filter
+- [`prepare()`](https://github.com/ndpvh/denoiser/reference/prepare.md)
+  : Prepare data for analysis
+
