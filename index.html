@@ -56,8 +56,62 @@
   <main id="main" class="col-md-9"><div class="section level1">
 <div class="page-header"><h1 id="denoiser">denoiser<a class="anchor" aria-label="anchor" href="#denoiser"></a>
 </h1></div>
-<p>Noiser and denoiser functions to be used for preprocessing spatial data. Based on the calibration project of the M4MA team.</p>
+<!-- badges: start -->
+
+<div class="section level2">
+<h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
+</h2>
+<p>Package containing functions for adding noise to and filtering out noise from positional data, that is data that contains measurements of x- and y-coordinates. This package implements code that allows for the addition of realistic noise to simulated data and for the user to employ a realistic filtering pipeline to simulated and empirical data, therefore allowing for realistic recovery studies for pedestrian modelers. Answers this specific need for the <a href="https://www.ampl-psych.com/projects/minds-for-mobile-agents/" class="external-link">Minds for Mobile Agents</a> pedestrian model implemented in the <a href="https://github.com/ndpvh/predped" class="external-link">predped package</a>, but can be more broadly applied.</p>
+<p>The implementation of this package and the defaults provided to the arguments of its functions is heavily based on results of a study conducted by Dr. Niels Vanhasbroeck and Prof. Dr. Andrew Heathcote, the repository of which you can find <a href="https://github.com/ndpvh/calibration-movement-data" class="external-link">here</a>.</p>
 </div>
+<div class="section level2">
+<h2 id="getting-started">Getting started<a class="anchor" aria-label="anchor" href="#getting-started"></a>
+</h2>
+<div class="section level3">
+<h3 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h3>
+<p>You can install the package from Github through the command:</p>
+<p><code>{r, eval = FALSE} remotes::install_github("ndpvh/denoiser")</code></p>
+<p>Once installed, you can load the package through the <code>library</code> function.</p>
+<p><code>{r, eval = FALSE} library(denoiser)</code></p>
+</div>
+<div class="section level3">
+<h3 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
+</h3>
+<p>The primary functionality of this package is provided through two functions, namely <code>noiser</code> and <code>denoiser</code>. Imagine that we have data that contains circular movement, such as in the following case:</p>
+<p>```{r, eval = FALSE} # Create x- and y-coordinates for a person walking in a full circle angles &lt;- seq(0, 2 * pi, length.out = 50) data &lt;- data.frame( time = 1:50, x = 10 * cos(angles), y = 10 * sin(angles) )</p>
+</div>
+</div>
+</div>
+<div class="section level1">
+<h1 id="plot-these-data">Plot these data<a class="anchor" aria-label="anchor" href="#plot-these-data"></a>
+</h1>
+<p>plot(data<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>,</mo><mi>d</mi><mi>a</mi><mi>t</mi><mi>a</mi></mrow><annotation encoding="application/x-tex">x, data</annotation></semantics></math>y)</p>
+<pre><code>
+Then we can add ``realistic'' noise to these data by using the `noiser` function. Specifically, we call:
+
+```{r, eval = FALSE}
+# Noise up the data
+noised_up &lt;- noiser(
+    data
+)
+
+# Plot the noised up data
+plot(noised_up$x, noised_up$y)</code></pre>
+<p>To decrease the noise again, we call the <code>denoiser</code> function:</p>
+<p>```{r, eval = FALSE} # Denoise the data denoised &lt;- denoiser( data )</p>
+</div>
+<div class="section level1">
+<h1 id="plot-the-denoised-data">Plot the denoised data<a class="anchor" aria-label="anchor" href="#plot-the-denoised-data"></a>
+</h1>
+<p>plot(denoised<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>,</mo><mi>d</mi><mi>e</mi><mi>n</mi><mi>o</mi><mi>i</mi><mi>s</mi><mi>e</mi><mi>d</mi></mrow><annotation encoding="application/x-tex">x, denoised</annotation></semantics></math>y) ```</p>
+<div class="section level2">
+<h2 id="getting-help">Getting help<a class="anchor" aria-label="anchor" href="#getting-help"></a>
+</h2>
+<p>You can find detailed documentation of the functions in this package as well as examples on the <a href="https://ndpvh.github.io/denoiser" class="external-link">Documentation site</a>. If you encounter a bug, please file an issue with a minimal working example on <a href="https://github.com/ndpvh/denoiser/issues">Github</a>.</p>
+</div>
+</div>
+
   </main><aside class="col-md-3"><div class="license">
 <h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
@@ -82,7 +136,15 @@
 </ul>
 </div>
 
-
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
+<ul class="list-unstyled">
+<li><a href="https://github.com/ndpvh/denoiser/releases"><img src="https://img.shields.io/github/v/release/npdvh/denoiser" alt="GitHub Release"></a></li>
+<li><a href="https://ndpvh.github.io/denoiser" class="external-link"><img src="https://img.shields.io/readthedocs/ndpvh/denoiser/v0.1.0" alt="Documentation"></a></li>
+<li><a href="https://github.com/ndpvh/denoiser/actions/workflows/R-CMD-check.yaml"><img src="https://github.com/ndpvh/denoiser/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
+<li><a href="https://app.codecov.io/gh/ndpvh/denoiser" class="external-link"><img src="https://codecov.io/gh/ndpvh/denoiser/graph/badge.svg" alt="Codecov test coverage"></a></li>
+</ul>
+</div>
 
   </aside>
 </div>
