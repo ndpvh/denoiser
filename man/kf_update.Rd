@@ -2,7 +2,7 @@
 % Please edit documentation in R/kalman_filter.R
 \name{kf_update}
 \alias{kf_update}
-\title{Update step in the Kalman filter}
+\title{Updating step in the Kalman filter}
 \usage{
 kf_update(x, P, y, H, K)
 }
@@ -19,29 +19,37 @@ t + 1.}
 \item{K}{Kalman gain}
 }
 \value{
-List containing the smoothed value of x ("x") together with the  
-Cholesky decomposition of its covariance ("P")
+List containing the smoothed value of \eqn{x} (\code{"x"}) together 
+with the Cholesky decomposition of its covariance (\code{"P"})
 }
 \description{
-In the update step, we use the measurement and the predicted value of the 
-variable x and use both to make a good guess of what the "real" value of 
-x might be (as well as what the uncertainty around this guess is).
+Updating step in the Kalman filter
 }
 \details{
-We do this using the following equation:
+In the update step, we use the measurement innovation \eqn{\mathbf{y}_i} and 
+the predicted value \eqn{\mathbf{x}_i} and combine both in a guess of what 
+the latent state of the system should be. For this, we use the following 
+equation:
 
-\begin{equation}
-    x_t = x + K y
-\end{equation}
-where x is the predicted value for the variable (coming from the prediction 
-step), K is the Kalman gain, and y is the innovation (both coming from the 
-innovation step).
+\deqn{\hat{\mathbf{x}}_i = \mathbf{x}_i + K \mathbf{y}}
+where \eqn{\mathbf{x}} is the prediction coming from the prediction step, 
+\eqn{\mathbf{y}} is the innovation derived in the innovation step, \eqn{K} is
+the Kalman gain, and \eqn{\hat{\mathbf{x}}} is the latent state of the system.
 
-For the covariance, we use the following equation:
+We also compute the covariance of this update:
 
-\begin{equation}
-    P_t = (I - K H) P
-\end{equation}
-where I is the identity matrix and P is the prediction covariance coming from 
-the prediction step.
+\deqn{\hat{P}_i = (I - K H) P_i}
+where I is the identity matrix, \eqn{H} is the measurement matrix, \eqn{K} is 
+the Kalman gain, \eqn{P_i} is the covariance of the prediction derived in the 
+prediction step, and \eqn{\hat{P}_i} is the estimated certainty around the 
+guess \deqn{\hat{\mathbf{x}}_i}. 
+
+Note that the values \deqn{\hat{\mathbf{x}}_i} and \eqn{\hat{P}_i} are used
+as initial conditions for the next time step \eqn{t_{i + 1}}, therefore 
+serving as input in the prediction step and starting the cycle all over again.
+}
+\seealso{
+\code{\link[denoiser]{kalman_filter}},
+\code{\link[denoiser]{kf_predict}},
+\code{\link[denoiser]{kf_innovation}}
 }

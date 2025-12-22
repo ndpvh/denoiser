@@ -68,3 +68,8 @@ kalman_filter(
 )
 
 }
+\seealso{
+\code{\link[denoiser]{kf_predict}},
+\code{\link[denoiser]{kf_innovation}},
+\code{\link[denoiser]{kf_update}}
+}

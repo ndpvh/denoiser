@@ -19,38 +19,39 @@ t + 1.}
 \item{R}{Cholesky decomposition of the measurement noise covariance matrix.#'}
 }
 \value{
-List of the innovation ("y"), the Cholesky decomposition of its 
-covariance matrix ("S"), and the Kalman gain ("K")
+Named list of the innovation (\code{"y"}), the Cholesky decomposition 
+of its covariance matrix (\code{"S"}), and the Kalman gain (\code{"K"})
 }
 \description{
-In the innovation step, we will define the innovation (or error) of the 
-measurement if the movement equation is correct in its prediction. This 
-expected innovation is defined as:
+Innovation step in the Kalman filter
 }
 \details{
-\begin{equation}
-    y = z - Hx
-\end{equation}
-where z is the measurement, H is the measurement matrix, and x is the 
-prediction.
+In the innovation step, we compute how much error we expect in the measurement
+if the movement equation is correct in its prediction. The expected 
+"innovation" is defined as:
 
-Additionally, we compute the covariance of this innovation, which is defined
-as:
+\deqn{\mathbf{y}_i = \mathbf{z}_i - H \mathbf{x}_i}
+where \eqn{\mathbf{z}} is the measurement, \eqn{H} is the measurement matrix, 
+and \eqn{\mathbf{x}} is the prediction obtained through the prediction step. 
+We also compute the covariance matrix for this innovation, which is defined as:
 
-\begin{equation}
-    S = H P H^T + R
-\end{equation}
-where R is the (assumed) measurement covariance. It is interesting to note 
-that the value of S is always symmetric for each value of H. Whether its 
-Cholesky decomposition exists, however, will depend on H as well as P.
+\deqn{\Sigma_i = H P_i H^T + R}
+where \eqn{R} contains the (assumed) measurement covariances. It is 
+interesting to note that the value of \eqn{\Sigma} is always symmetric for 
+each value of \eqn{H}. Whether its Cholesky decomposition exists, however, 
+will depend on both \eqn{H} and \eqn{P}.
 
-Finally, we use the covariance of the prediction and the measurement 
-covariance to define the Kalman gain, here computed as:
+In the final step, we compute the Kalman gain using both the covariance of 
+the prediction and the total covariance of the measurement process through 
+the following equation: 
 
-\begin{equation}
-    K = P H^T S^{-1}
-\end{equation}
-making the Kalman gain a measure of how much we can trust the prediction 
-(pitting prediction covariance over the total variance, i.e. prediction 
-covariance + measurement covariance).
+\deqn{K_i = P_i H^T \Sigma_i^{-1}}
+As one may notice, the Kalman gain is a measure of how much we can trust the
+prediction, specifically by putting the prediction covariance over the total
+variance. It is thus related to a measure of reliability.
+}
+\seealso{
+\code{\link[denoiser]{kalman_filter}},
+\code{\link[denoiser]{kf_predict}},
+\code{\link[denoiser]{kf_update}}
 }

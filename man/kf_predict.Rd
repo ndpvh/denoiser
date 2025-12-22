@@ -2,7 +2,7 @@
 % Please edit documentation in R/kalman_filter.R
 \name{kf_predict}
 \alias{kf_predict}
-\title{Predict step in the Kalman filter}
+\title{Prediction step in the Kalman filter}
 \usage{
 kf_predict(
   x0,
@@ -29,31 +29,35 @@ empty vector.}
 By default an empty matrix.}
 }
 \value{
-List of predicted values for x and P at time t + 1.
+Named list of predicted values for \eqn{\mathbf{x}} (\code{"x}) and 
+\eqn{P} (\code{"P"}) at the next time point.
 }
 \description{
-In this step, we use the movement equation to predict the new values of x 
-based on the initial condition \code{x0}, namely through the equation
+Prediction step in the Kalman filter
 }
 \details{
-\begin{equation}
-    x = F x0 + G u
-\end{equation}
-where F is the movement transition matrix, G is the error matrix, and u is 
-the error at that time. For the constant velocity model, this error is 
-equal to random changes in acceleration.
+In this step, we use the movement equation to predict the new values of x 
+based on the initial condition defined by the location \eqn{\mathbf{x}} and 
+the covariance \eqn{P} at time \eqn{t_{i - 1}}, using the equation:
 
-We also compute the certainty around this prediction based on the initial 
-estimate of this covariance and updated with the error variance associated to 
-u, so that:
+\deqn{\mathbf{x}_t = F_i \mathbf{x}_{i - 1} + B_i \mathbf{u}_i + \mathbf{\epsilon}_i}
+where \eqn{F} is the movement transition matrix, \eqn{B} scales the external
+influences \eqn{\mathbf{u}}, and \eqn{\mathbf{\epsilon}} defines the error, 
+and where all terms are defined at the time point \eqn{t_i}. 
 
-\begin{equation}
-    P = F P0 F^T + G U G^T
-\end{equation}
-where U is the covariance matrix of u. We additionally contract $G u$ and 
-$G U G^T$ into the singular error $w$ and its covariance matrix $W$ for 
-simplicity purposes.
+The covariance \eqn{P} is also updated based on this equation, representing 
+the certainty around the prediction \eqn{\mathbf{x}_i}. This covariance is 
+updated through the following equation:
 
-Note that in this implementation, we always use Cholesky decomposition 
-instead of actual covariances.
+\deqn{P_i = F_i P_{i - 1} F_i^T + W_i}
+where \eqn{W} represents the covariance matrix of \eqn{\epsilon}. 
+
+For stability purposes, we use Cholesky decompositions of the covariance 
+matrices rather than the actual covariance matrices. This needs to be taken 
+into account when making your own model.
+}
+\seealso{
+\code{\link[denoiser]{kalman_filter}},
+\code{\link[denoiser]{kf_innovation}},
+\code{\link[denoiser]{kf_update}}
 }
