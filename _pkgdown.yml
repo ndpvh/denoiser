@@ -1,0 +1,10 @@
+url: https://github.com/ndpvh/denoiser
+
+template:
+  bootstrap: 5
+  light-switch: true 
+  theme: github-light
+  theme-dark: github-dark
+  includes:
+    in_header: |
+      <script type="text/javascript" async="" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML"></script>
