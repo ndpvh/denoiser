@@ -52,7 +52,7 @@
 #'     "y" = "Y"
 #'   ),
 #'   .by = "tag",
-#'   assumed_variance = 0.01
+#'   error = 0.01
 #' )
 #' 
 #' @seealso 
@@ -81,7 +81,7 @@ kalman_filter <- function(data,
 
     # Load the movement and measurement equations that were asked for by the 
     # user. Load them as a function so that we can use them later on
-    model <- function(x) kalman_models[[model]](
+    equation <- function(x) kalman_models[[model]](
         x, 
         ...
     )
@@ -131,7 +131,7 @@ kalman_filter <- function(data,
             #   - P0: The initial condition for the covariance matrix for the 
             #         observations
             #   - cols: The columns that should be used in the filter
-            parameters <- model(data_x)   
+            parameters <- equation(data_x)   
 
             z <- parameters[["z"]]
             x0 <- parameters[["x"]]
