@@ -4,7 +4,7 @@
 
 [![GitHub Release](https://img.shields.io/github/v/release/npdvh/denoiser)](https://github.com/ndpvh/denoiser/releases)
 [![GitHub License](https://img.shields.io/github/license/ndpvh/denoiser)](https://github.com/ndpvh/denoiser/blob/main/LICENSE)
-[![Documentation](https://img.shields.io/readthedocs/ndpvh/denoiser/v0.1.0)](https://ndpvh.github.io/denoiser)
+[![Documentation](https://img.shields.io/readthedocs/denoiser/v0.1.0)](https://ndpvh.github.io/denoiser)
 [![R-CMD-check](https://github.com/ndpvh/denoiser/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/ndpvh/denoiser/actions/workflows/R-CMD-check.yaml)
 [![Codecov test
 coverage](https://codecov.io/gh/ndpvh/denoiser/graph/badge.svg)](https://app.codecov.io/gh/ndpvh/denoiser)
