@@ -201,7 +201,7 @@ constant_velocity <- function(data,
     # The external influences are assumed to amount to 0, which is reflected in 
     # the matrices B and u below.
     B <- matrix(0, nrow = 4, ncol = 1)
-    u <- matrix(0, nrow = nrow(y), ncol = 1)
+    u <- matrix(0, nrow = nrow(data), ncol = 1)
 
     # Define the measurement equation parameters H and R.
     H <- c(1, 0, 0, 0,
@@ -237,7 +237,7 @@ constant_velocity <- function(data,
     # package kalmanfilter.
     return(
         list(
-            "z" = y,          # Data to smooth
+            "z" = data,       # Data to smooth
             "x" = x0,         # Current value of x (prior mean)
             "P" = P0,         # Current covariance of x (prior covariance)
             "F" = F,          # Movement transition matrix
