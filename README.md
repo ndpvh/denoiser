@@ -22,13 +22,13 @@ The implementation of this package and the defaults provided to the arguments of
 
 You can install the package from Github through the command:
 
-```{r, eval = FALSE}
+```{r}
 remotes::install_github("ndpvh/denoiser")
 ```
 
 Once installed, you can load the package through the `library` function.
 
-```{r, eval = FALSE}
+```{r}
 library(denoiser)
 ```
 
@@ -36,7 +36,7 @@ library(denoiser)
 
 The primary functionality of this package is provided through two functions, namely `noiser` and `denoiser`. Imagine that we have data that contains circular movement, such as in the following case:
 
-```{r, eval = FALSE}
+```{r}
 # Create x- and y-coordinates for a person walking in a full circle
 angles <- seq(0, 2 * pi, length.out = 50)
 data <- data.frame(
@@ -51,7 +51,7 @@ plot(data$x, data$y)
 
 Then we can add ``realistic'' noise to these data by using the `noiser` function. Specifically, we call:
 
-```{r, eval = FALSE}
+```{r}
 # Noise up the data
 noised_up <- noiser(
     data
@@ -63,7 +63,7 @@ plot(noised_up$x, noised_up$y)
 
 To decrease the noise again, we call the `denoiser` function:
 
-```{r, eval = FALSE}
+```{r}
 # Denoise the data
 denoised <- denoiser(
     data
