@@ -4,7 +4,14 @@
 \alias{kalman_filter}
 \title{Smooth using a Kalman filter}
 \usage{
-kalman_filter(data, model = "constant_velocity", cols = NULL, .by = NULL, ...)
+kalman_filter(
+  data,
+  model = "constant_velocity",
+  cols = NULL,
+  .by = NULL,
+  N_min = 5,
+  ...
+)
 }
 \arguments{
 \item{data}{Dataframe that contains information on location (x- and 
@@ -26,6 +33,9 @@ assuming the structure explained in `data`.}
 \item{.by}{String denoting whether the moving window should be taken with 
 respect to a given grouping variable. Defaults to `NULL`.}
 
+\item{N_min}{Integer denoting the minimum number of datapoints that are 
+needed to use the Kalman filter. Defaults to \code{5}.}
+
 \item{...}{Additional arguments provided to the loaded model. For more 
 information, see [constant_velocity].}
 }
@@ -40,10 +50,9 @@ these grouped data.
 \examples{
 # Generate data for illustration purposes. Movement in circular motion at a
 # pace of 1.27m/s with some added noise of SD = 10cm.
-# some added noise
 angles <- seq(0, 4 * pi, length.out = 100)
 coordinates <- 10 * cbind(cos(angles), sin(angles))
-coordinates <- coordines + rnorm(200, mean = 0, sd = 0.1)
+coordinates <- coordinates + rnorm(200, mean = 0, sd = 0.1)
 
 data <- data.frame(
   X = coordinates[, 1],
@@ -64,7 +73,7 @@ kalman_filter(
     "y" = "Y"
   ),
   .by = "tag",
-  assumed_variance = 0.01
+  error = 0.01
 )
 
 }

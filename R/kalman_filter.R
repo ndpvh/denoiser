@@ -284,7 +284,7 @@ kalman_filter <- function(data,
 #' @param B Matrix that connects the external variables in u to the values in x.
 #' By default an empty matrix.
 #' 
-#' @return Named list of predicted values for \eqn{\mathbf{x}} (\code{"x}) and 
+#' @return Named list of predicted values for \eqn{\mathbf{x}} (\code{"x"}) and 
 #' \eqn{P} (\code{"P"}) at the next time point.
 #' 
 #' @seealso 

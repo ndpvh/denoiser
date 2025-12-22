@@ -29,7 +29,7 @@ empty vector.}
 By default an empty matrix.}
 }
 \value{
-Named list of predicted values for \eqn{\mathbf{x}} (\code{"x}) and 
+Named list of predicted values for \eqn{\mathbf{x}} (\code{"x"}) and 
 \eqn{P} (\code{"P"}) at the next time point.
 }
 \description{

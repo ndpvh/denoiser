@@ -138,7 +138,7 @@ these variables (in \eqn{P_0}). Note that we provide a covariance matrix
 # some added noise
 angles <- seq(0, 4 * pi, length.out = 100)
 coordinates <- 10 * cbind(cos(angles), sin(angles))
-coordinates <- coordines + rnorm(200, mean = 0, sd = 0.1)
+coordinates <- coordinates + rnorm(200, mean = 0, sd = 0.1)
 
 data <- data.frame(
   x = coordinates[, 1],
