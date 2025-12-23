@@ -405,9 +405,9 @@ kf_innovation <- function(z,
 #' where I is the identity matrix, \eqn{H} is the measurement matrix, \eqn{K} is 
 #' the Kalman gain, \eqn{P_i} is the covariance of the prediction derived in the 
 #' prediction step, and \eqn{\hat{P}_i} is the estimated certainty around the 
-#' guess \deqn{\hat{\mathbf{x}}_i}. 
+#' guess \eqn{\hat{\mathbf{x}}_i}. 
 #' 
-#' Note that the values \deqn{\hat{\mathbf{x}}_i} and \eqn{\hat{P}_i} are used
+#' Note that the values \eqn{\hat{\mathbf{x}}_i} and \eqn{\hat{P}_i} are used
 #' as initial conditions for the next time step \eqn{t_{i + 1}}, therefore 
 #' serving as input in the prediction step and starting the cycle all over again.
 #' 
