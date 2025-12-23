@@ -1,26 +1,24 @@
 #' Finalize data after analysis
 #' 
 #' Function that is used internally to change the data back to their original 
-#' format after conducting an analysis, it being either binning ([bin()]) or 
-#' using the Kalman filter ([kalman_filter()]). The finalization consists of 
+#' format after conducting an analysis, it being either binning 
+#' (\code{\link[denoiser]{bin()}}) or using the Kalman filter 
+#' (\code{\link[denoiser]{kalman_filter()}}). The finalization consists of 
 #' renaming the columns to the user-defined column names instead of the package-
 #' required ones and deleting the grouping variable if it was not originally 
 #' present in the data.
 #' 
 #' @param data Dataframe that contains information on location (x- and 
-#' y-coordinates) and the time at which the measurement was taken. By default, 
-#' [kalman_filter()] will assume that this information is contained within the 
-#' columns `"x"`, `"y"`, and `"time"` respectively.
-#' @param cols Named vector or named list containing the relevant column names
-#' in 'data' if they didn't contain the prespecified column names `"time"`, 
-#' `"x"`, and `"y"`. The labels should conform to these prespecified 
-#' column names and the values given to these locations should contain the 
-#' corresponding column names in that dataset. Defaults to `NULL`, therefore 
-#' assuming the structure explained in `data`.
+#' y-coordinates) and the time at which the measurement was taken. It is assumed
+#' that this information is contained within the columns \code{"x"}, \code{"y"},
+#' and \code{"time"} respectively.
+#' @param cols Named vector or named list containing the mapping of the original
+#' column names to the internal ones used within the package. Defaults to 
+#' \code{NULL}, therefore assuming the structure explained in \code{data}.
 #' @param .by String denoting whether the moving window should be taken with 
-#' respect to a given grouping variable. Defaults to `NULL`.
+#' respect to a given grouping variable. Defaults to \code{NULL}.
 #' 
-#' @return Adjusted `data.frame`
+#' @return Adjusted \code{data.frame}
 #' 
 #' @examples 
 #' # Generate data for illustration purposes
@@ -44,6 +42,9 @@
 #'   ),
 #'   .by = "tag"
 #' )
+#' 
+#' @seealso 
+#' \code{\link[denoiser]{prepare()}}
 #' 
 #' @export
 finalize <- function(data, 

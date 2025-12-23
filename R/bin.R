@@ -14,24 +14,25 @@
 #' 
 #' @param data Dataframe that contains information on location (x- and 
 #' y-coordinates) and the time at which the measurement was taken. By default, 
-#' [kalman_filter()] will assume that this information is contained within the 
-#' columns `"x"`, `"y"`, and `"time"` respectively. If this isn't the case, 
-#' either change the column names in the data or specify the `cols` argument.
+#' \code{\link[denoiser]{bin()}} will assume that this information is contained 
+#' within the columns \code{"x"}, \code{"y"}, and \code{"time"} respectively. 
+#' If this isn't the case, either change the column names in the data or specify 
+#' the \code{cols} argument.
 #' @param span Numeric denoting the size of the bins. Will pertain to the values
-#' in the `time` variable. Defaults to `0.5`.
+#' in the \code{"time"} variable. Defaults to \code{0.5}.
 #' @param fx Function to execute on the data that falls within the bin. Will be
-#' executed on the `x` and `y` columns separately and should ouput only a single
-#' value. Defaults to the function [mean()].
+#' executed on the \code{"x"} and \code{"y"} columns separately and should ouput 
+#' only a single value. Defaults to the function \code{\link[base]{mean()}}.
 #' @param cols Named vector or named list containing the relevant column names
-#' in 'data' if they didn't contain the prespecified column names `"time"`, 
-#' `"x"`, and `"y"`. The labels should conform to these prespecified 
-#' column names and the values given to these locations should contain the 
-#' corresponding column names in that dataset. Defaults to `NULL`, therefore 
-#' assuming the structure explained in `data`.
+#' in \code{data} if they didn't contain the prespecified column names 
+#' \code{"time"}, \code{"x"}, and \code{"y"}. The labels should conform to these 
+#' prespecified column names and the values given to these locations should 
+#' contain the corresponding column names in that dataset. Defaults to 
+#' \code{NULL}, therefore assuming the structure explained in \code{data}.
 #' @param .by String denoting whether the moving window should be taken with 
-#' respect to a given grouping variable. Defaults to `NULL`.
+#' respect to a given grouping variable. Defaults to \code{NULL}.
 #' 
-#' @return Binned dataframe with a similar structure as `data`
+#' @return Binned dataframe with a similar structure as \code{data}
 #' 
 #' @examples 
 #' # Generate data for illustration purposes

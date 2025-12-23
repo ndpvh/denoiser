@@ -9,4 +9,12 @@
 Noiser and denoiser functions to be used for preprocessing spatial data. 
 Based on the calibration project of the M4MA team.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/ndpvh/denoiser}
+  \item Report bugs at \url{https://github.com/ndpvh/denoiser/issues}
+}
+
+}
 \keyword{internal}
