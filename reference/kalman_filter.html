@@ -67,28 +67,29 @@ these grouped data.</p>
 <dl><dt id="arg-data">data<a class="anchor" aria-label="anchor" href="#arg-data"></a></dt>
 <dd><p>Dataframe that contains information on location (x- and
 y-coordinates) and the time at which the measurement was taken. By default,
-[kalman_filter()] will assume that this information is contained within the
-columns `"x"`, `"y"`, and `"time"` respectively. If this isn't the case,
-either change the column names in the data or specify the `cols` argument.</p></dd>
+<code>kalman_filter()</code> will assume that this information is
+contained within the columns <code>"x"</code>, <code>"y"</code>, and <code>"time"</code>
+respectively. If this isn't the case, either change the column names in the
+data or specify the <code>cols</code> argument.</p></dd>
 
 
 <dt id="arg-model">model<a class="anchor" aria-label="anchor" href="#arg-model"></a></dt>
 <dd><p>String denoting which model to use. Defaults to
-`"constant_velocity"`, and is currently the only one that is implemented.</p></dd>
+<code>"constant_velocity"</code>, and is currently the only one that is implemented.</p></dd>
 
 
 <dt id="arg-cols">cols<a class="anchor" aria-label="anchor" href="#arg-cols"></a></dt>
 <dd><p>Named vector or named list containing the relevant column names
-in 'data' if they didn't contain the prespecified column names `"time"`,
-`"x"`, and `"y"`. The labels should conform to these prespecified
-column names and the values given to these locations should contain the
-corresponding column names in that dataset. Defaults to `NULL`, therefore
-assuming the structure explained in `data`.</p></dd>
+in <code>data</code> if they didn't contain the prespecified column names
+<code>"time"</code>, <code>"x"</code>, and <code>"y"</code>. The labels should conform to these
+prespecified column names and the values given to these locations should
+contain the corresponding column names in that dataset. Defaults to
+<code>NULL</code>, therefore assuming the structure explained in <code>data</code>.</p></dd>
 
 
 <dt id="arg--by">.by<a class="anchor" aria-label="anchor" href="#arg--by"></a></dt>
 <dd><p>String denoting whether the moving window should be taken with
-respect to a given grouping variable. Defaults to `NULL`.</p></dd>
+respect to a given grouping variable. Defaults to <code>NULL</code>.</p></dd>
 
 
 <dt id="arg-n-min">N_min<a class="anchor" aria-label="anchor" href="#arg-n-min"></a></dt>
@@ -98,12 +99,12 @@ needed to use the Kalman filter. Defaults to <code>5</code>.</p></dd>
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>Additional arguments provided to the loaded model. For more
-information, see [constant_velocity].</p></dd>
+information, see <code><a href="constant_velocity.html">constant_velocity()</a></code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>Smoothed dataframe with a similar structure as `data`</p>
+    <p>Smoothed dataframe with a similar structure as <code>data</code></p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

@@ -23,31 +23,29 @@ kalman_filter(
 
   Dataframe that contains information on location (x- and y-coordinates)
   and the time at which the measurement was taken. By default,
-  \[kalman_filter()\] will assume that this information is contained
-  within the columns \`"x"\`, \`"y"\`, and \`"time"\` respectively. If
-  this isn't the case, either change the column names in the data or
-  specify the \`cols\` argument.
+  `kalman_filter()` will assume that this information is contained
+  within the columns `"x"`, `"y"`, and `"time"` respectively. If this
+  isn't the case, either change the column names in the data or specify
+  the `cols` argument.
 
 - model:
 
-  String denoting which model to use. Defaults to
-  \`"constant_velocity"\`, and is currently the only one that is
-  implemented.
+  String denoting which model to use. Defaults to `"constant_velocity"`,
+  and is currently the only one that is implemented.
 
 - cols:
 
   Named vector or named list containing the relevant column names in
-  'data' if they didn't contain the prespecified column names
-  \`"time"\`, \`"x"\`, and \`"y"\`. The labels should conform to these
-  prespecified column names and the values given to these locations
-  should contain the corresponding column names in that dataset.
-  Defaults to \`NULL\`, therefore assuming the structure explained in
-  \`data\`.
+  `data` if they didn't contain the prespecified column names `"time"`,
+  `"x"`, and `"y"`. The labels should conform to these prespecified
+  column names and the values given to these locations should contain
+  the corresponding column names in that dataset. Defaults to `NULL`,
+  therefore assuming the structure explained in `data`.
 
 - .by:
 
   String denoting whether the moving window should be taken with respect
-  to a given grouping variable. Defaults to \`NULL\`.
+  to a given grouping variable. Defaults to `NULL`.
 
 - N_min:
 
@@ -57,11 +55,12 @@ kalman_filter(
 - ...:
 
   Additional arguments provided to the loaded model. For more
-  information, see \[constant_velocity\].
+  information, see
+  [`constant_velocity()`](https://github.com/ndpvh/denoiser/reference/constant_velocity.md).
 
 ## Value
 
-Smoothed dataframe with a similar structure as \`data\`
+Smoothed dataframe with a similar structure as `data`
 
 ## See also
 

@@ -6,6 +6,8 @@
   observations
 - [`constant_velocity()`](https://github.com/ndpvh/denoiser/reference/constant_velocity.md)
   : Constant velocity model
+- [`denoiser()`](https://github.com/ndpvh/denoiser/reference/denoiser.md)
+  : Filter the data
 - [`finalize()`](https://github.com/ndpvh/denoiser/reference/finalize.md)
   : Finalize data after analysis
 - [`kalman_filter()`](https://github.com/ndpvh/denoiser/reference/kalman_filter.md)
