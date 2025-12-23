@@ -83,6 +83,6 @@ Smoothed and/or binned `data.frame` with a similar structure as `data`
 
 [`bin()`](https://github.com/ndpvh/denoiser/reference/bin.md)
 [`kalman_filter()`](https://github.com/ndpvh/denoiser/reference/kalman_filter.md)
-`noiser()`
+[`noiser()`](https://github.com/ndpvh/denoiser/reference/noiser.md)
 
 ## Examples

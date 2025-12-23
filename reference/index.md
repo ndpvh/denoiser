@@ -20,5 +20,7 @@
   : Prediction step in the Kalman filter
 - [`kf_update()`](https://github.com/ndpvh/denoiser/reference/kf_update.md)
   : Updating step in the Kalman filter
+- [`noiser()`](https://github.com/ndpvh/denoiser/reference/noiser.md) :
+  Add noise to the data
 - [`prepare()`](https://github.com/ndpvh/denoiser/reference/prepare.md)
   : Prepare data for analysis
