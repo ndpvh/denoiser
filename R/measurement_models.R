@@ -69,7 +69,7 @@ independent <- function(data,
     }
 
     # Check whether the dimensionality of the covariances is allright
-    if(dim(covariance) != c(2, 2)) {
+    if(all(dim(covariance) != c(2, 2))) {
         stop(
             paste(
                 "Provided covariance matrix does not have the right dimensionality.",
@@ -182,7 +182,7 @@ temporal <- function(data,
     }
 
     # Check whether the dimensionality of the covariances is allright
-    if(dim(covariance) != c(2, 2)) {
+    if(all(dim(covariance) != c(2, 2))) {
         stop(
             paste(
                 "Provided covariance matrix does not have the right dimensionality.",
@@ -202,7 +202,7 @@ temporal <- function(data,
     }
 
     # Check whether the dimensionality of the covariances is allright
-    if(dim(transition) != c(2, 2)) {
+    if(all(dim(transition) != c(2, 2))) {
         stop(
             paste(
                 "Provided transition matrix does not have the right dimensionality.",
