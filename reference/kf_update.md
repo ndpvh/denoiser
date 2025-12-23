@@ -55,12 +55,12 @@ We also compute the covariance of this update:
 is the measurement matrix, \\K\\ is the Kalman gain, \\P_i\\ is the
 covariance of the prediction derived in the prediction step, and
 \\\hat{P}\_i\\ is the estimated certainty around the guess
-\$\$\hat{\mathbf{x}}\_i\$\$.
+\\\hat{\mathbf{x}}\_i\\.
 
-Note that the values \$\$\hat{\mathbf{x}}\_i\$\$ and \\\hat{P}\_i\\ are
-used as initial conditions for the next time step \\t\_{i + 1}\\,
-therefore serving as input in the prediction step and starting the cycle
-all over again.
+Note that the values \\\hat{\mathbf{x}}\_i\\ and \\\hat{P}\_i\\ are used
+as initial conditions for the next time step \\t\_{i + 1}\\, therefore
+serving as input in the prediction step and starting the cycle all over
+again.
 
 ## See also
 

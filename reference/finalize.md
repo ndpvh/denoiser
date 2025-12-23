@@ -2,10 +2,12 @@
 
 Function that is used internally to change the data back to their
 original format after conducting an analysis, it being either binning
-(\[bin()\]) or using the Kalman filter (\[kalman_filter()\]). The
-finalization consists of renaming the columns to the user-defined column
-names instead of the package- required ones and deleting the grouping
-variable if it was not originally present in the data.
+([`bin()`](https://github.com/ndpvh/denoiser/reference/bin.md)) or using
+the Kalman filter
+([`kalman_filter()`](https://github.com/ndpvh/denoiser/reference/kalman_filter.md)).
+The finalization consists of renaming the columns to the user-defined
+column names instead of the package- required ones and deleting the
+grouping variable if it was not originally present in the data.
 
 ## Usage
 
@@ -18,28 +20,28 @@ finalize(data, cols = NULL, .by = NULL)
 - data:
 
   Dataframe that contains information on location (x- and y-coordinates)
-  and the time at which the measurement was taken. By default,
-  \[kalman_filter()\] will assume that this information is contained
-  within the columns \`"x"\`, \`"y"\`, and \`"time"\` respectively.
+  and the time at which the measurement was taken. It is assumed that
+  this information is contained within the columns `"x"`, `"y"`, and
+  `"time"` respectively.
 
 - cols:
 
-  Named vector or named list containing the relevant column names in
-  'data' if they didn't contain the prespecified column names
-  \`"time"\`, \`"x"\`, and \`"y"\`. The labels should conform to these
-  prespecified column names and the values given to these locations
-  should contain the corresponding column names in that dataset.
-  Defaults to \`NULL\`, therefore assuming the structure explained in
-  \`data\`.
+  Named vector or named list containing the mapping of the original
+  column names to the internal ones used within the package. Defaults to
+  `NULL`, therefore assuming the structure explained in `data`.
 
 - .by:
 
   String denoting whether the moving window should be taken with respect
-  to a given grouping variable. Defaults to \`NULL\`.
+  to a given grouping variable. Defaults to `NULL`.
 
 ## Value
 
-Adjusted \`data.frame\`
+Adjusted `data.frame`
+
+## See also
+
+[`prepare()`](https://github.com/ndpvh/denoiser/reference/prepare.md)
 
 ## Examples
 

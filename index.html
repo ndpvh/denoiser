@@ -38,6 +38,7 @@
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="search.json">
 </form></li>
+<li class="nav-item"><a class="nav-link" href="https://github.com/ndpvh/denoiser/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-lightswitch" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true" aria-label="Light switch"><span class="fa fa-sun"></span></button>
   <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-lightswitch">
@@ -61,7 +62,7 @@
 <div class="section level2">
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
-<p>Package containing functions for adding noise to and filtering out noise from positional data, that is data that contains measurements of x- and y-coordinates. This package implements code that allows for the addition of realistic noise to simulated data and for the user to employ a realistic filtering pipeline to simulated and empirical data, therefore allowing for realistic recovery studies for pedestrian modelers. Answers this specific need for the <a href="https://www.ampl-psych.com/projects/minds-for-mobile-agents/" class="external-link">Minds for Mobile Agents</a> pedestrian model implemented in the <a href="https://github.com/ndpvh/predped" class="external-link">predped package</a>, but can be more broadly applied.</p>
+<p>This package contains functions for adding noise to and filtering out noise from positional data, that is data that contains measurements of x- and y-coordinates. This package implements code that allows for the addition of realistic noise to simulated data and for the user to employ a realistic filtering pipeline to simulated and empirical data, therefore allowing for realistic recovery studies for pedestrian modelers. Answers this specific need for the <a href="https://www.ampl-psych.com/projects/minds-for-mobile-agents/" class="external-link">Minds for Mobile Agents</a> pedestrian model implemented in the <a href="https://github.com/ndpvh/predped" class="external-link">predped package</a>, but can be more broadly applied.</p>
 <p>The implementation of this package and the defaults provided to the arguments of its functions is heavily based on results of a study conducted by Dr. Niels Vanhasbroeck and Prof. Dr. Andrew Heathcote, the repository of which you can find <a href="https://github.com/ndpvh/calibration-movement-data" class="external-link">here</a>.</p>
 </div>
 <div class="section level2">
@@ -71,48 +72,51 @@
 <h3 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h3>
 <p>You can install the package from Github through the command:</p>
-<p><code>{r} remotes::install_github("ndpvh/denoiser")</code></p>
+<pre><code><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"ndpvh/denoiser"</span><span class="op">)</span></span></code></pre>
 <p>Once installed, you can load the package through the <code>library</code> function.</p>
-<p><code>{r} library(denoiser)</code></p>
+<pre><code><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ndpvh/denoiser">denoiser</a></span><span class="op">)</span></span></code></pre>
 </div>
 <div class="section level3">
 <h3 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
 </h3>
-<p>The primary functionality of this package is provided through two functions, namely <code>noiser</code> and <code>denoiser</code>. Imagine that we have data that contains circular movement, such as in the following case:</p>
-<p>```{r} # Create x- and y-coordinates for a person walking in a full circle angles &lt;- seq(0, 2 * pi, length.out = 50) data &lt;- data.frame( time = 1:50, x = 10 * cos(angles), y = 10 * sin(angles) )</p>
-</div>
-</div>
-</div>
-<div class="section level1">
-<h1 id="plot-these-data">Plot these data<a class="anchor" aria-label="anchor" href="#plot-these-data"></a>
-</h1>
-<p>plot(data<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>,</mo><mi>d</mi><mi>a</mi><mi>t</mi><mi>a</mi></mrow><annotation encoding="application/x-tex">x, data</annotation></semantics></math>y)</p>
-<pre><code>
-Then we can add ``realistic'' noise to these data by using the `noiser` function. Specifically, we call:
-
-```{r}
-# Noise up the data
-noised_up &lt;- noiser(
-    data
-)
-
-# Plot the noised up data
-plot(noised_up$x, noised_up$y)</code></pre>
+<p>The primary functionality of this package is provided through two functions, namely <code>noiser</code> and <code>denoiser</code>. Imagine having data that contains circular movement, such as in the following case:</p>
+<pre><code><span><span class="co"># Create x- and y-coordinates for a person walking in a full circle</span></span>
+<span><span class="va">angles</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span> <span class="op">*</span> <span class="va">pi</span>, length.out <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span>
+<span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>    time <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">50</span>,</span>
+<span>    x <span class="op">=</span> <span class="fl">10</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Trig.html" class="external-link">cos</a></span><span class="op">(</span><span class="va">angles</span><span class="op">)</span>,</span>
+<span>    y <span class="op">=</span> <span class="fl">10</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Trig.html" class="external-link">sin</a></span><span class="op">(</span><span class="va">angles</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre>
+<p>Then one can add “realistic” noise to these data by using the <code>noiser</code> function. Specifically, you call:</p>
+<pre><code><span><span class="co"># Noise up the data</span></span>
+<span><span class="va">noised_up</span> <span class="op">&lt;-</span> <span class="fu">noiser</span><span class="op">(</span></span>
+<span>    <span class="va">data</span>,</span>
+<span>    <span class="co"># Arguments defining the noising</span></span>
+<span><span class="op">)</span></span></code></pre>
 <p>To decrease the noise again, we call the <code>denoiser</code> function:</p>
-<p>```{r} # Denoise the data denoised &lt;- denoiser( data )</p>
+<pre><code><span><span class="co"># Denoise the data</span></span>
+<span><span class="va">denoised</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/denoiser-package.html">denoiser</a></span><span class="op">(</span></span>
+<span>    <span class="va">noised_up</span>,</span>
+<span>    <span class="co"># Arguments defining the denoising</span></span>
+<span><span class="op">)</span></span></code></pre>
+<p>For more details on how to use these functions, I refer the reader to the <a href="https://ndpvh.github.io/denoiser" class="external-link">Documentation</a>.</p>
 </div>
-<div class="section level1">
-<h1 id="plot-the-denoised-data">Plot the denoised data<a class="anchor" aria-label="anchor" href="#plot-the-denoised-data"></a>
-</h1>
-<p>plot(denoised<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>,</mo><mi>d</mi><mi>e</mi><mi>n</mi><mi>o</mi><mi>i</mi><mi>s</mi><mi>e</mi><mi>d</mi></mrow><annotation encoding="application/x-tex">x, denoised</annotation></semantics></math>y) ```</p>
+</div>
 <div class="section level2">
 <h2 id="getting-help">Getting help<a class="anchor" aria-label="anchor" href="#getting-help"></a>
 </h2>
 <p>You can find detailed documentation of the functions in this package as well as examples on the <a href="https://ndpvh.github.io/denoiser" class="external-link">Documentation site</a>. If you encounter a bug, please file an issue with a minimal working example on <a href="https://github.com/ndpvh/denoiser/issues">Github</a>.</p>
 </div>
 </div>
+  </main><aside class="col-md-3"><div class="links">
+<h2 data-toc-skip>Links</h2>
+<ul class="list-unstyled">
+<li><a href="https://github.com/ndpvh/denoiser/">Browse source code</a></li>
+<li><a href="https://github.com/ndpvh/denoiser/issues">Report a bug</a></li>
+</ul>
+</div>
 
-  </main><aside class="col-md-3"><div class="license">
+<div class="license">
 <h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
 <li>
