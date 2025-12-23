@@ -8,5 +8,6 @@
 ## usethis namespace: start
 #' @useDynLib denoiser
 #' @import MASS
+#' @importFrom expm %^%
 ## usethis namespace: end
 NULL
