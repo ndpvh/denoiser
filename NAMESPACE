@@ -2,6 +2,7 @@
 
 export(bin)
 export(constant_velocity)
+export(denoiser)
 export(finalize)
 export(kalman_filter)
 export(kalman_models)

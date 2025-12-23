@@ -1,1 +1,108 @@
-#'
+#' Filter the data
+#' 
+#' The \code{\link[denoiser]{denoiser()}} function takes in a dataset and 
+#' attempts to filter out the inherent measurement error. The function makes 
+#' use of two steps: The data will go through a Kalman filter and will then be 
+#' binned, both according to the specifications of the user (see 
+#' \code{\link[denoiser]{kalman_filter()}} and \code{\link[denoiser]{bin()}}).
+#' Note that only the first step is mandatory and that it's left up to the user
+#' whether they would also like to bin their data through specifying the 
+#' argument \code{binned}.
+#' 
+#' @param data Dataframe that contains information on location (x- and 
+#' y-coordinates) and the time at which the measurement was taken. By default, 
+#' \code{\link[denoiser]{denoiser()}} will assume that this information is 
+#' contained within the columns \code{"x"}, \code{"y"}, and \code{"time"} 
+#' respectively. If this isn't the case, either change the column names in the 
+#' data or specify the \code{cols} argument.
+#' @param cols Named vector or named list containing the relevant column names
+#' in \code{data} if they do not conform to the prespecified column names 
+#' \code{"time"}, \code{"x"}, and \code{"y"}. The labels should conform to these 
+#' prespecified column names and the values given to these locations should 
+#' contain the corresponding column names in that dataset. Defaults to 
+#' \code{NULL}, therefore assuming the structure explained in \code{data}.
+#' @param .by String denoting whether the moving window should be taken with 
+#' respect to a given grouping variable. Defaults to \code{NULL}.
+#' @param binned Logical denoting whether to also bin the data (\code{TRUE}) or
+#' to leave the data unbinned (\code{FALSE}). Defaults to \code{FALSE}.
+#' @param span Numeric denoting the size of the bins. Will pertain to the values
+#' in the \code{"time"} variable. Defaults to \code{0.5}. Ignored when 
+#' \code{binned} is \code{FALSE}.
+#' @param fx Function to execute on the data that falls within the bin. Will be
+#' executed on the \code{"x"} and \code{"y"} columns separately and should ouput 
+#' only a single value. Defaults to the function \code{\link[base]{mean()}}.
+#' Ignored when \code{binned} is \code{FALSE}.
+#' @param ... Additional arguments defining the Kalman filter to employ for 
+#' filtering. See \code{\link[denoiser]{kalman_filter()}}.
+#' 
+#' @return Smoothed and/or binned \code{data.frame} with a similar structure as 
+#' \code{data}
+#' 
+#' @examples 
+#' # Generate data for illustration purposes. Movement in circular motion at a
+#' # pace of 1.27m/s with some added noise of SD = 10cm.
+#' angles <- seq(0, 4 * pi, length.out = 100)
+#' coordinates <- 10 * cbind(cos(angles), sin(angles))
+#' coordinates <- coordinates + rnorm(200, mean = 0, sd = 0.1)
+#' 
+#' data <- data.frame(
+#'   X = coordinates[, 1],
+#'   Y = coordinates[, 2],
+#'   seconds = rep(1:50, times = 2),
+#'   tag = rep(1:2, each = 50)
+#' )
+#' 
+#' # Use the denoiser function to get rid of the noise. Kalman filter is 
+#' # defined with the constant velocity model and an error variance of 0.01. 
+#' # Binning is performed with a span of 5 seconds and using the mean of the 
+#' # interval as representatitive of the position within that interval.
+#' denoiser(
+#'   data,
+#'   cols = c(
+#'     "time" = "seconds",
+#'     "x" = "X",
+#'     "y" = "Y"
+#'   ),
+#'   .by = "tag"
+#'   model = "constant_velocity",
+#'   error = 0.01,
+#'   binned = TRUE,
+#'   span = 5,
+#'   fx = mean
+#' )
+#' 
+#' @seealso 
+#' \code{\link[denoiser]{bin()}}
+#' \code{\link[denoiser]{kalman_filter()}}
+#' \code{\link[denoiser]{noiser()}}
+#' 
+#' @export 
+denoiser <- function(data, 
+                     cols = NULL,
+                     .by = NULL,
+                     binned = FALSE,
+                     span = 0.5, 
+                     fx = mean, 
+                     ...) {
+    
+    # Perform the Kalman filter to smooth the data
+    data <- kalman_filter(
+        data, 
+        cols = cols,
+        .by = .by,
+        ...
+    )
+
+    # If asked for, also bin the data
+    if(binned) {
+        data <- bin(
+            data, 
+            cols = cols,
+            .by = .by,
+            span = span,
+            fx = fx
+        )
+    }
+
+    return(data)
+}

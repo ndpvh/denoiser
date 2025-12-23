@@ -2,7 +2,6 @@
 % Please edit documentation in R/denoiser-package.R
 \docType{package}
 \name{denoiser-package}
-\alias{denoiser}
 \alias{denoiser-package}
 \title{denoiser: Noising and denoising spatial data}
 \description{
