@@ -3,7 +3,9 @@ Type: Package
 Title: Noising and denoising spatial data
 Version: 0.1.0
 Date: 2025-12-19
-URL: https://ndpvh/github.io/denoiser
+Description: 
+    Noiser and denoiser functions to be used for preprocessing spatial data. 
+    Based on the calibration project of the M4MA team.
 Author: person(
     "Niels", 
     "Vanhasbroeck", 
@@ -11,9 +13,8 @@ Author: person(
     role = c("aut", "cre"),
     comment = c(ORCID = 0000-0002-7423-0090))
 Maintainer: Niels Vanhasbroeck <niels.vanhasbroeck@gmail.com>
-Description: 
-    Noiser and denoiser functions to be used for preprocessing spatial data. 
-    Based on the calibration project of the M4MA team.
+URL: https://github.com/ndpvh/denoiser
+BugReports: https://github.com/ndpvh/denoiser/issues
 License: GPL-3 + file LICENSE
 Encoding: UTF-8
 Imports: 
