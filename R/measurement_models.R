@@ -238,7 +238,7 @@ temporal <- function(data,
         # data. If it's not the first iteration, then we make the process depend 
         # on itself according to an autoregressive process
         if(i != 1) {
-            data[i, c("x", "y")] <- intercept + transition %*% data[i, c("x", "y")]            
+            data[i, c("x", "y")] <- intercept + transition %*% as.numeric(data[i, c("x", "y")])           
         }
 
         data[i, c("x", "y")] <- data[i, c("x", "y")] + residuals[i, ]
