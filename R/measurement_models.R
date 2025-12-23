@@ -127,7 +127,8 @@ independent <- function(data,
 #' @param sampling_rate Numeric denoting the sampling rate in Hz. Is used to 
 #' scale the transition matrix according to the actual sampling rate. Defaults to 
 #' \code{6.13}, which is the mean sampling rate for the data obtained across the
-#' four days of the calibration study that informed this project.
+#' four days of the calibration study that informed this project. If you change
+#' the \code{transition} argument, it is recommended to ignore this argument.
 #' 
 #' @return A \code{data.frame} in which the \code{"x"} and \code{"y"} columns 
 #' have additional noise in them.
@@ -145,17 +146,18 @@ independent <- function(data,
 #' )
 #' 
 #' # Add independent noise to these data with an error variance of 0.01 in each
-#' # dimension
-#' independent(
+#' # dimension and a transition matrix containing autoregressive effects of 0.15
+#' temporal(
 #'   data,
-#'   mean = c(0, 0),
+#'   intercept = c(0, 0),
+#'   transition = diag(2) * 0.15,
 #'   covariance = diag(2) * 0.01
 #' ) |>
 #'   head()
 #' 
 #' @seealso 
 #' \code{\link[denoiser]{noiser()}}
-#' \code{\link[denoiser]{temporal()}}
+#' \code{\link[denoiser]{independent()}}
 #' 
 #' @export
 temporal <- function(data, 
