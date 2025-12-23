@@ -6,25 +6,26 @@
 #' 
 #' @param data Dataframe that contains information on location (x- and 
 #' y-coordinates) and the time at which the measurement was taken. By default, 
-#' [kalman_filter()] will assume that this information is contained within the 
-#' columns `"x"`, `"y"`, and `"time"` respectively. If this isn't the case, 
-#' either change the column names in the data or specify the `cols` argument.
+#' \code{\link[denoiser]{kalman_filter()}} will assume that this information is 
+#' contained within the columns \code{"x"}, \code{"y"}, and \code{"time"} 
+#' respectively. If this isn't the case, either change the column names in the 
+#' data or specify the \code{cols} argument.
 #' @param model String denoting which model to use. Defaults to 
-#' `"constant_velocity"`, and is currently the only one that is implemented.
+#' \code{"constant_velocity"}, and is currently the only one that is implemented.
 #' @param cols Named vector or named list containing the relevant column names
-#' in 'data' if they didn't contain the prespecified column names `"time"`, 
-#' `"x"`, and `"y"`. The labels should conform to these prespecified 
-#' column names and the values given to these locations should contain the 
-#' corresponding column names in that dataset. Defaults to `NULL`, therefore 
-#' assuming the structure explained in `data`.
+#' in \code{data} if they didn't contain the prespecified column names 
+#' \code{"time"}, \code{"x"}, and \code{"y"}. The labels should conform to these 
+#' prespecified column names and the values given to these locations should 
+#' contain the corresponding column names in that dataset. Defaults to 
+#' \code{NULL}, therefore assuming the structure explained in \code{data}.
 #' @param .by String denoting whether the moving window should be taken with 
-#' respect to a given grouping variable. Defaults to `NULL`.
+#' respect to a given grouping variable. Defaults to \code{NULL}.
 #' @param N_min Integer denoting the minimum number of datapoints that are 
 #' needed to use the Kalman filter. Defaults to \code{5}.
 #' @param ... Additional arguments provided to the loaded model. For more 
-#' information, see [constant_velocity].
+#' information, see \code{\link[denoiser]{constant_velocity()}}.
 #' 
-#' @return Smoothed dataframe with a similar structure as `data`
+#' @return Smoothed dataframe with a similar structure as \code{data}
 #' 
 #' @examples 
 #' # Generate data for illustration purposes. Movement in circular motion at a
