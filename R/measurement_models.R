@@ -65,7 +65,7 @@
 #' @export
 independent <- function(data, 
                         mean = c(0, 0), 
-                        covariance = c(0.031^2, 0.02, 0.02, 0.027^2) |>
+                        covariance = c(0.031^2, 0, 0, 0.027^2) |>
                             matrix(nrow = 2, ncol = 2)) {
 
     # Perform a check of the length of the means
@@ -216,7 +216,7 @@ temporal <- function(data,
                     intercept = c(0, 0), 
                     transition = c(0.925, 0.085, 0.085, 0.87) |>
                         matrix(nrow = 2, ncol = 2),
-                    covariance = c(0.031^2, 0.02, 0.02, 0.027^2) |>
+                    covariance = c(0.015^2, 0, 0, 0.015^2) |>
                         matrix(nrow = 2, ncol = 2),
                     sampling_rate = 6.13) {
 
