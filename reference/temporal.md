@@ -14,7 +14,7 @@ temporal(
   data,
   intercept = c(0, 0),
   transition = matrix(c(0.925, 0.085, 0.085, 0.87), nrow = 2, ncol = 2),
-  covariance = matrix(c(0.031^2, 0.02, 0.02, 0.027^2), nrow = 2, ncol = 2),
+  covariance = matrix(c(0.015^2, 0, 0, 0.015^2), nrow = 2, ncol = 2),
   sampling_rate = 6.13
 )
 ```
@@ -98,9 +98,9 @@ to keep in mind when specifying the intercept to add bias to the system.
 Furthermore note that the covariance \\\Sigma\_\epsilon\\ of the process
 \\\mathbf{\epsilon}\\ is defined as:
 
-\$\$\Sigma\_\epsilon = (I - \Theta)^{-2} \Sigma\$\$ which is useful to
-keep in mind when specifying the covariance matrix \\\Sigma\\, which is
-defined on the level of \\\mathbf{\omega}\\.
+\$\$\Sigma\_\epsilon = \Sigma - \Theta \Sigma \Theta^T\$\$ which is
+useful to keep in mind when specifying the covariance matrix \\\Sigma\\,
+which is defined on the level of \\\mathbf{\omega}\\.
 
 Once the errors \\\mathbf{\epsilon}\_i\\ are defined, we compute the
 observed positions \\\mathbf{y}\_i\\ as consisting of a systematic
@@ -137,11 +137,11 @@ temporal(
   covariance = diag(2) * 0.01
 ) |>
   head()
-#>           x          y time
-#> 1 10.144916 0.03585909    1
-#> 2 10.020436 1.26840390    2
-#> 3  9.745068 2.62655598    3
-#> 4  9.253334 3.77124487    4
-#> 5  8.636802 4.90249433    5
-#> 6  8.095415 5.85217640    6
+#>          x            y time
+#> 1 9.742460 -0.008170467    1
+#> 2 9.871491  1.277113124    2
+#> 3 9.724273  2.552381774    3
+#> 4 9.212954  3.760601839    4
+#> 5 8.605056  4.885181521    5
+#> 6 7.844626  6.047900151    6
 ```

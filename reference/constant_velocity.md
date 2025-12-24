@@ -368,8 +368,8 @@ constant_velocity(
 #>         0, 0, 0, 0, 1), nrow = 4, ncol = 4, byrow = TRUE)
 #>     return(M)
 #> }
-#> <bytecode: 0x55e2a47d0358>
-#> <environment: 0x55e2a47d20f0>
+#> <bytecode: 0x56095f268470>
+#> <environment: 0x56095f26a348>
 #> 
 #> $W
 #> function (delta_t) 
@@ -380,8 +380,8 @@ constant_velocity(
 #>         ncol = 4, byrow = TRUE)
 #>     return(M)
 #> }
-#> <bytecode: 0x55e2a47cf8a0>
-#> <environment: 0x55e2a47d20f0>
+#> <bytecode: 0x56095f2679b8>
+#> <environment: 0x56095f26a348>
 #> 
 #> $B
 #>      [,1]

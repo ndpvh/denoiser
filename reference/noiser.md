@@ -20,7 +20,7 @@ noiser(data, cols = NULL, .by = NULL, model = "temporal", ...)
 
   Dataframe that contains information on location (x- and y-coordinates)
   and the time at which the measurement was taken. By default,
-  [`denoiser()`](https://github.com/ndpvh/denoiser/reference/denoiser.md)
+  [`denoiser()`](https://github.com/ndpvh/denoiser/reference/denoiser-function.md)
   will assume that this information is contained within the columns
   `"x"`, `"y"`, and `"time"` respectively. If this isn't the case,
   either change the column names in the data or specify the `cols`
@@ -43,12 +43,17 @@ noiser(data, cols = NULL, .by = NULL, model = "temporal", ...)
 
 - model:
 
-  String denoting the model to be used for noising up the data. Either
-  `"independent"` or `"temporal"`, calling the
+  String or function denoting the model to be used for noising up the
+  data. When providing a string, one will use one of the native
+  measurement models of the package, in which case the value should
+  either be `"independent"` or `"temporal"`, calling the
   [`independent()`](https://github.com/ndpvh/denoiser/reference/independent.md)
   or
   [`temporal()`](https://github.com/ndpvh/denoiser/reference/temporal.md)
-  model respectively. Defaults to `"temporal"`.
+  model respectively. If a function, then it should take in at least the
+  `data` and add noise to these `data` through using the default column
+  names (see `data`). See the vignettes for more information on how to
+  specify this function. Defaults to `"temporal"`.
 
 - ...:
 
@@ -65,7 +70,7 @@ Noised up `data.frame` with a similar structure as `data`
 ## See also
 
 [`independent()`](https://github.com/ndpvh/denoiser/reference/independent.md)
-[`denoiser()`](https://github.com/ndpvh/denoiser/reference/denoiser.md)
+[`denoiser()`](https://github.com/ndpvh/denoiser/reference/denoiser-function.md)
 [`temporal()`](https://github.com/ndpvh/denoiser/reference/temporal.md)
 
 ## Examples
@@ -98,11 +103,11 @@ noiser(
   covariance = diag(2) * 0.01
 ) |>
   head()
-#>   seconds        X          Y tag
-#> 1       1 9.926674 0.01037486   1
-#> 2       2 9.961569 1.19556831   1
-#> 3       3 9.705025 2.66122127   1
-#> 4       4 9.320603 3.68634187   1
-#> 5       5 8.617249 4.72428423   1
-#> 6       6 8.097239 6.01739631   1
+#>   seconds         X         Y tag
+#> 1       1 10.059094 0.1313144   1
+#> 2       2  9.993758 1.2745259   1
+#> 3       3  9.610136 2.4484947   1
+#> 4       4  9.289626 3.7821316   1
+#> 5       5  8.924883 4.8639067   1
+#> 6       6  8.180153 5.9987063   1
 ```

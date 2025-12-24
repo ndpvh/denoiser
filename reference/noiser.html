@@ -24,6 +24,12 @@ measurement error does depend on time (temporal())."><script type="text/javascri
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-usage" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Usage</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-usage"><li><a class="dropdown-item" href="../articles/getting_started.html">Getting started</a></li>
+    <li><a class="dropdown-item" href="../articles/noiser_vignette.html">Adding noise</a></li>
+    <li><a class="dropdown-item" href="../articles/denoiser_vignette.html">Filtering data</a></li>
+  </ul></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
 <li class="nav-item"><a class="nav-link" href="https://github.com/ndpvh/denoiser/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
@@ -66,7 +72,7 @@ measurement error does depend on time (<code><a href="temporal.html">temporal()<
 <dl><dt id="arg-data">data<a class="anchor" aria-label="anchor" href="#arg-data"></a></dt>
 <dd><p>Dataframe that contains information on location (x- and
 y-coordinates) and the time at which the measurement was taken. By default,
-<code><a href="denoiser.html">denoiser()</a></code> will assume that this information is
+<code><a href="denoiser-function.html">denoiser()</a></code> will assume that this information is
 contained within the columns <code>"x"</code>, <code>"y"</code>, and <code>"time"</code>
 respectively. If this isn't the case, either change the column names in the
 data or specify the <code>cols</code> argument.</p></dd>
@@ -87,10 +93,15 @@ respect to a given grouping variable. Defaults to <code>NULL</code>.</p></dd>
 
 
 <dt id="arg-model">model<a class="anchor" aria-label="anchor" href="#arg-model"></a></dt>
-<dd><p>String denoting the model to be used for noising up the data.
-Either <code>"independent"</code> or <code>"temporal"</code>, calling the
+<dd><p>String or function denoting the model to be used for noising up
+the data. When providing a string, one will use one of the native measurement
+models of the package, in which case the value should either be
+<code>"independent"</code> or <code>"temporal"</code>, calling the
 <code><a href="independent.html">independent()</a></code> or <code><a href="temporal.html">temporal()</a></code>
-model respectively. Defaults to <code>"temporal"</code>.</p></dd>
+model respectively. If a function, then it should take in at least the
+<code>data</code> and add noise to these <code>data</code> through using the default
+column names (see <code>data</code>). See the vignettes for more information on
+how to specify this function. Defaults to <code>"temporal"</code>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -106,7 +117,7 @@ more information, see <code><a href="independent.html">independent()</a></code> 
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="independent.html">independent()</a></code>
-<code><a href="denoiser.html">denoiser()</a></code>
+<code><a href="denoiser-function.html">denoiser()</a></code>
 <code><a href="temporal.html">temporal()</a></code></p></div>
     </div>
 
@@ -139,13 +150,13 @@ more information, see <code><a href="independent.html">independent()</a></code> 
 <span class="r-in"><span>  covariance <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span> <span class="op">*</span> <span class="fl">0.01</span></span></span>
 <span class="r-in"><span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   seconds        X          Y tag</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1       1 9.926674 0.01037486   1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2       2 9.961569 1.19556831   1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3       3 9.705025 2.66122127   1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4       4 9.320603 3.68634187   1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5       5 8.617249 4.72428423   1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6       6 8.097239 6.01739631   1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   seconds         X         Y tag</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1       1 10.059094 0.1313144   1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2       2  9.993758 1.2745259   1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3       3  9.610136 2.4484947   1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4       4  9.289626 3.7821316   1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5       5  8.924883 4.8639067   1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6       6  8.180153 5.9987063   1</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

@@ -26,6 +26,12 @@ carried over over time). See the details for more information."><script type="te
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-usage" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Usage</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-usage"><li><a class="dropdown-item" href="../articles/getting_started.html">Getting started</a></li>
+    <li><a class="dropdown-item" href="../articles/noiser_vignette.html">Adding noise</a></li>
+    <li><a class="dropdown-item" href="../articles/denoiser_vignette.html">Filtering data</a></li>
+  </ul></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
 <li class="nav-item"><a class="nav-link" href="https://github.com/ndpvh/denoiser/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
@@ -63,7 +69,7 @@ carried over over time). See the details for more information.</p>
 <span>  <span class="va">data</span>,</span>
 <span>  intercept <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>,</span>
 <span>  transition <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.925</span>, <span class="fl">0.085</span>, <span class="fl">0.085</span>, <span class="fl">0.87</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">2</span>, ncol <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>,</span>
-<span>  covariance <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.031</span><span class="op">^</span><span class="fl">2</span>, <span class="fl">0.02</span>, <span class="fl">0.02</span>, <span class="fl">0.027</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">2</span>, ncol <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>,</span>
+<span>  covariance <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.015</span><span class="op">^</span><span class="fl">2</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0.015</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">2</span>, ncol <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>,</span>
 <span>  sampling_rate <span class="op">=</span> <span class="fl">6.13</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -140,7 +146,7 @@ mean of the process is defined as:</p>
 which is useful to keep in mind when specifying the intercept to add bias to
 the system. Furthermore note that the covariance \(\Sigma_\epsilon\) of the
 process \(\mathbf{\epsilon}\) is defined as:</p>
-<p>$$\Sigma_\epsilon = (I - \Theta)^{-2} \Sigma$$
+<p>$$\Sigma_\epsilon = \Sigma - \Theta \Sigma \Theta^T$$
 which is useful to keep in mind when specifying the covariance matrix
 \(\Sigma\), which is defined on the level of \(\mathbf{\omega}\).</p>
 <p>Once the errors \(\mathbf{\epsilon}_i\) are defined, we compute the
@@ -177,13 +183,13 @@ error component so that:</p>
 <span class="r-in"><span>  covariance <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span> <span class="op">*</span> <span class="fl">0.01</span></span></span>
 <span class="r-in"><span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>           x          y time</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 10.144916 0.03585909    1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 10.020436 1.26840390    2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3  9.745068 2.62655598    3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4  9.253334 3.77124487    4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5  8.636802 4.90249433    5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6  8.095415 5.85217640    6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          x            y time</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 9.742460 -0.008170467    1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 9.871491  1.277113124    2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 9.724273  2.552381774    3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4 9.212954  3.760601839    4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5 8.605056  4.885181521    5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6 7.844626  6.047900151    6</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
