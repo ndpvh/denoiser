@@ -76,6 +76,8 @@
 #' \code{\link[denoiser]{kalman_filter()}}
 #' \code{\link[denoiser]{noiser()}}
 #' 
+#' @rdname denoiser-function
+#' 
 #' @export 
 denoiser <- function(data, 
                      cols = NULL,
