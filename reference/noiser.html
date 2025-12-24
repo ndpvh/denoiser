@@ -50,8 +50,8 @@ measurement error does depend on time (temporal())."><script type="text/javascri
     <p>The <code>noiser()</code> function takes in a dataset and
 adds measurement error to it. To do this, it currently makes use of one of
 two potential measurement models: One in which the measurement error is
-independent over time (<code>independent()</code>) and one in which
-measurement error does depend on time (<code>temporal()</code>).</p>
+independent over time (<code><a href="independent.html">independent()</a></code>) and one in which
+measurement error does depend on time (<code><a href="temporal.html">temporal()</a></code>).</p>
     </div>
 
     <div class="section level2">
@@ -89,14 +89,14 @@ respect to a given grouping variable. Defaults to <code>NULL</code>.</p></dd>
 <dt id="arg-model">model<a class="anchor" aria-label="anchor" href="#arg-model"></a></dt>
 <dd><p>String denoting the model to be used for noising up the data.
 Either <code>"independent"</code> or <code>"temporal"</code>, calling the
-<code>independent()</code> or <code>temporal()</code>
+<code><a href="independent.html">independent()</a></code> or <code><a href="temporal.html">temporal()</a></code>
 model respectively. Defaults to <code>"temporal"</code>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>Additional arguments provided to the measurement error models. For
-more information, see <code>independent()</code> or
-<code>temporal()</code>.</p></dd>
+more information, see <code><a href="independent.html">independent()</a></code> or
+<code><a href="temporal.html">temporal()</a></code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -105,14 +105,49 @@ more information, see <code>independent()</code> or
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code>independent()</code>
+    <div class="dont-index"><p><code><a href="independent.html">independent()</a></code>
 <code><a href="denoiser.html">denoiser()</a></code>
-<code>temporal()</code></p></div>
+<code><a href="temporal.html">temporal()</a></code></p></div>
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Generate data for illustration purposes. Movement in circular motion at a</span></span></span>
+<span class="r-in"><span><span class="co"># pace of 1.27m/s with some added noise of SD = 10cm.</span></span></span>
+<span class="r-in"><span><span class="va">angles</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">4</span> <span class="op">*</span> <span class="va">pi</span>, length.out <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">coordinates</span> <span class="op">&lt;-</span> <span class="fl">10</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Trig.html" class="external-link">cos</a></span><span class="op">(</span><span class="va">angles</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/Trig.html" class="external-link">sin</a></span><span class="op">(</span><span class="va">angles</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  X <span class="op">=</span> <span class="va">coordinates</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span>,</span></span>
+<span class="r-in"><span>  Y <span class="op">=</span> <span class="va">coordinates</span><span class="op">[</span>, <span class="fl">2</span><span class="op">]</span>,</span></span>
+<span class="r-in"><span>  seconds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">50</span>, times <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  tag <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, each <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Use the noiser function to add measurement error. We use the independent </span></span></span>
+<span class="r-in"><span><span class="co"># measurement error model with independence between the x- and y-dimension </span></span></span>
+<span class="r-in"><span><span class="co"># and with the measurement error variance being 0.01 in both dimensions</span></span></span>
+<span class="r-in"><span><span class="fu">noiser</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">data</span>,</span></span>
+<span class="r-in"><span>  cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="st">"time"</span> <span class="op">=</span> <span class="st">"seconds"</span>,</span></span>
+<span class="r-in"><span>    <span class="st">"x"</span> <span class="op">=</span> <span class="st">"X"</span>,</span></span>
+<span class="r-in"><span>    <span class="st">"y"</span> <span class="op">=</span> <span class="st">"Y"</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span>,</span></span>
+<span class="r-in"><span>  .by <span class="op">=</span> <span class="st">"tag"</span>,</span></span>
+<span class="r-in"><span>  model <span class="op">=</span> <span class="st">"independent"</span>,</span></span>
+<span class="r-in"><span>  covariance <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span> <span class="op">*</span> <span class="fl">0.01</span></span></span>
+<span class="r-in"><span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   seconds        X          Y tag</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1       1 9.926674 0.01037486   1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2       2 9.961569 1.19556831   1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3       3 9.705025 2.66122127   1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4       4 9.320603 3.68634187   1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5       5 8.617249 4.72428423   1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6       6 8.097239 6.01739631   1</span>
+<span class="r-in"><span></span></span>
+</code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
