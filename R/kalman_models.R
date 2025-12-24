@@ -10,10 +10,10 @@
 #' constant, so that acceleration can be put to 0. This means that we can use 
 #' the following movement equation to model changes in the positions, so that:
 #' 
-#' \deqn{\begin{\bmatrix}
+#' \deqn{\begin{bmatrix}
 #'   x \\
 #'   y \\
-#' \end{bmatrix}_i = \begin{\bmatrix}
+#' \end{bmatrix}_i = \begin{bmatrix}
 #'   x \\
 #'   y \\
 #' \end{bmatrix}_{i - 1} + \begin{bmatrix}
