@@ -7,7 +7,7 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/ndpvh/denoiser/blob/main/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/ndpvh/denoiser/blob/version/DESCRIPTION)
 
 person, c) c= (2025). *denoiser: Noising and denoising spatial data*. R
 package version 0.1.0, <https://github.com/ndpvh/denoiser>.
