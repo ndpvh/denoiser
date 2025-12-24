@@ -6,7 +6,7 @@
 "_PACKAGE"
 
 ## usethis namespace: start
-#' @useDynLib denoiser
+# ' @useDynLib denoiser
 #' @import MASS
 #' @importFrom expm %^%
 ## usethis namespace: end
