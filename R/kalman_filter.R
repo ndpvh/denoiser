@@ -12,6 +12,9 @@
 #' data or specify the \code{cols} argument.
 #' @param model String denoting which model to use. Defaults to 
 #' \code{"constant_velocity"}, and is currently the only one that is implemented.
+#' Can also contain a user-defined function that defines the model they use. 
+#' For restrictions on what this function should do, see the vignette on Filtering
+#' data.
 #' @param cols Named vector or named list containing the relevant column names
 #' in \code{data} if they didn't contain the prespecified column names 
 #' \code{"time"}, \code{"x"}, and \code{"y"}. The labels should conform to these 
@@ -82,10 +85,14 @@ kalman_filter <- function(data,
 
     # Load the movement and measurement equations that were asked for by the 
     # user. Load them as a function so that we can use them later on
-    equation <- function(x) kalman_models[[model]](
-        x, 
-        ...
-    )
+    if(is.character(model)) {
+        equation <- function(x) kalman_models[[model]](
+            x, 
+            ...
+        )
+    } else {
+        equation <- function(x) model(x, ...)
+    }
 
     # Check how much data you have. Based on personal experience, the Kalman 
     # filter cannot operate properly when less than 5 datapoints are available. 
