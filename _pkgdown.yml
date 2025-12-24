@@ -8,3 +8,17 @@ template:
   includes:
     in_header: |
       <script type="text/javascript" async="" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+navbar:
+  structure:
+    left: [reference, articles]
+  components:
+    articles:
+      text: Usage
+      menu:
+      - text: Getting started
+        href: articles/getting_started.html
+      - text: Adding noise
+        href: articles/noiser_vignette.html
+      - text: Filtering data
+        href: articles/denoiser_vignette.html
