@@ -141,7 +141,12 @@ independent <- function(data,
 #' 
 #' \deqn{\mathbf{\mu} = (I - \Theta)^{-1} \mathbf{\delta}}
 #' which is useful to keep in mind when specifying the intercept to add bias to 
-#' the system. 
+#' the system. Furthermore note that the covariance \eqn{\Sigma_\epsilon} of the 
+#' process \eqn{\mathbf{\epsilon}} is defined as:
+#' 
+#' \deqn{\Sigma_\epsilon = (I - \Theta)^{-2} \Sigma}
+#' which is useful to keep in mind when specifying the covariance matrix 
+#' \eqn{\Sigma}, which is defined on the level of \eqn{\mathbf{\omega}}.
 #' 
 #' Once the errors \eqn{\mathbf{\epsilon}_i} are defined, we compute the
 #' observed positions \eqn{\mathbf{y}_i} as consisting of a systematic component 
