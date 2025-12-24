@@ -5,6 +5,19 @@
 #' assumption of this model is that the errors are independent over time, 
 #' which stands in contrast to the \code{\link[denoiser]{temporal()}} model.
 #' 
+#' @details 
+#' According to this function, the observed positions \eqn{\mathbf{y}_i} at time
+#' \eqn{t_i} contain some white noise error. In symbols, this comes down to 
+#' saying that:
+#' 
+#' \deqn{\mathbf{\epsilon}_{i} \sim N(\mathbf{\mu}, \Sigma)}
+#' where \eqn{\mathbf{\mu}} represents the mean of the noise and \eqn{\Sigma}
+#' the covariance matrix of the noise. The observed positions \eqn{\mathbf{y}_i}
+#' then consist of a systematic component (i.e., the latent positions, provided
+#' in \code{data}) and an unsystematic error component so that:
+#' 
+#' \deqn{\mathbf{y}_i = \mathbf{x}_i + \mathbf{\epsilon}_i}
+#' 
 #' @param data A data.frame containing the data on which to base the parameters
 #' of the constant velocity model. This function assumes that this data.frame
 #' contains the columns \code{"time"}, \code{"x"}, and \code{"y"} containing 
@@ -98,9 +111,44 @@ independent <- function(data,
 
 #' Add temporal error to data
 #' 
-#' Error is generated through a vector autoregressive model with defining
-#' parameters \code{intercept}, \code{transition}, and \code{covariance} being
-#' specified by the user. 
+#' Error is generated through a vector autoregressive model with its defining 
+#' parameters parameters \code{intercept}, \code{transition}, and 
+#' \code{covariance}, which should be specified by the user. Note that the 
+#' temporal component of this model is defined on the residual level (i.e., 
+#' residuals carry over over time), not on the data level (positions are not 
+#' carried over over time). See the details for more information.
+#' 
+#' @details
+#' According to this function, the observed positions \eqn{\mathbf{y}_i} at time
+#' \eqn{t_i} contain error that in itself is temporally related, that is carried
+#' over over time. Specifically, we assume that the error 
+#' \eqn{\mathbf{\epsilon}_i} at time \eqn{t_i} depends on the error 
+#' \eqn{\mathbf{\epsilon}_{i - 1}} at previous time \eqn{t_{i - 1}} and a white
+#' noise residual at the same timepoint, as specified in the vector 
+#' autoregressive model. In symbols:
+#' 
+#' \deqn{\mathbf{\epsilon}_i = \mathbf{\delta}} + 
+#' \Theta \mathbf{\epsilon}_{i - 1} + \mathbf{\omega}_i}
+#' 
+#' with
+#' 
+#' \deqn{\mathbf{\omega}_i \sim N(\mathbf{0}, \Sigma)}
+#' where \eqn{\mathbf{\delta}} represents the intercept of the model, 
+#' \eqn{\Theta} is the transition matrix defining the temporal carry-over, and 
+#' \eqn{\Sigma} is the covariance matrix of the white noise residuals 
+#' \eqn{\mathbf{\omega}}. Note that for the vector autoregressive model, the 
+#' mean of the process is defined as:
+#' 
+#' \deqn{\mathbf{\mu} = (I - \Theta)^{-1} \mathbf{\delta}}
+#' which is useful to keep in mind when specifying the intercept to add bias to 
+#' the system. 
+#' 
+#' Once the errors \eqn{\mathbf{\epsilon}_i} are defined, we compute the
+#' observed positions \eqn{\mathbf{y}_i} as consisting of a systematic component 
+#' (i.e., the latent positions, provided in \code{data}) and the unsystematic 
+#' error component so that:
+#' 
+#' \deqn{\mathbf{y}_i = \mathbf{x}_i + \mathbf{\epsilon}_i}
 #' 
 #' @param data A data.frame containing the data on which to base the parameters
 #' of the constant velocity model. This function assumes that this data.frame
@@ -231,18 +279,28 @@ temporal <- function(data,
         mu = c(0, 0), 
         Sigma = covariance
     )
+    epsilon <- matrix(
+        0, 
+        nrow = nrow(data),
+        ncol = 2
+    )
 
     # Loop over all rows of the process
     for(i in seq_len(nrow(data))) {
         # If it is the first iteration, then we just add the residuals to the 
         # data. If it's not the first iteration, then we make the process depend 
         # on itself according to an autoregressive process
-        if(i != 1) {
-            data[i, c("x", "y")] <- intercept + transition %*% as.numeric(data[i, c("x", "y")])           
+        if(i == 1) {
+            epsilon[i, ] <- solve(diag(2) - transition) %*% intercept + 
+                residuals[i, ]
+        } else {
+            epsilon[i, ] <- intercept + 
+                transition %*% as.numeric(epsilon[i - 1, ]) +
+                residuals[i, ]
         }
-
-        data[i, c("x", "y")] <- data[i, c("x", "y")] + residuals[i, ]
     }
+
+    data[, c("x", "y")] <- data[, c("x", "y")] + epsilon
 
     return(data)
 }
