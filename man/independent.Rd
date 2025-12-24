@@ -7,7 +7,7 @@
 independent(
   data,
   mean = c(0, 0),
-  covariance = matrix(c(0.031^2, 0.02, 0.02, 0.027^2), nrow = 2, ncol = 2)
+  covariance = matrix(c(0.031^2, 0, 0, 0.027^2), nrow = 2, ncol = 2)
 )
 }
 \arguments{

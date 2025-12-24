@@ -24,10 +24,15 @@ contain the corresponding column names in that dataset. Defaults to
 \item{.by}{String denoting whether the moving window should be taken with 
 respect to a given grouping variable. Defaults to \code{NULL}.}
 
-\item{model}{String denoting the model to be used for noising up the data. 
-Either \code{"independent"} or \code{"temporal"}, calling the 
+\item{model}{String or function denoting the model to be used for noising up 
+the data. When providing a string, one will use one of the native measurement
+models of the package, in which case the value should either be 
+\code{"independent"} or \code{"temporal"}, calling the 
 \code{\link[denoiser]{independent()}} or \code{\link[denoiser]{temporal()}}
-model respectively. Defaults to \code{"temporal"}.}
+model respectively. If a function, then it should take in at least the 
+\code{data} and add noise to these \code{data} through using the default 
+column names (see \code{data}). See the vignettes for more information on 
+how to specify this function. Defaults to \code{"temporal"}.}
 
 \item{...}{Additional arguments provided to the measurement error models. For
 more information, see \code{\link[denoiser]{independent()}} or 

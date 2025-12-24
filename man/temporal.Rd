@@ -8,7 +8,7 @@ temporal(
   data,
   intercept = c(0, 0),
   transition = matrix(c(0.925, 0.085, 0.085, 0.87), nrow = 2, ncol = 2),
-  covariance = matrix(c(0.031^2, 0.02, 0.02, 0.027^2), nrow = 2, ncol = 2),
+  covariance = matrix(c(0.015^2, 0, 0, 0.015^2), nrow = 2, ncol = 2),
   sampling_rate = 6.13
 )
 }
