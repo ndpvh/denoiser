@@ -127,8 +127,7 @@ independent <- function(data,
 #' noise residual at the same timepoint, as specified in the vector 
 #' autoregressive model. In symbols:
 #' 
-#' \deqn{\mathbf{\epsilon}_i = \mathbf{\delta}} + 
-#' \Theta \mathbf{\epsilon}_{i - 1} + \mathbf{\omega}_i}
+#' \deqn{\mathbf{\epsilon}_i = \mathbf{\delta} + \Theta \mathbf{\epsilon}_{i - 1} + \mathbf{\omega}_i}
 #' 
 #' with
 #' 
