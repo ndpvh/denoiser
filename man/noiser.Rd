@@ -66,7 +66,7 @@ noiser(
     "x" = "X",
     "y" = "Y"
   ),
-  .by = "tag"
+  .by = "tag",
   model = "independent",
   covariance = diag(2) * 0.01
 ) |>
