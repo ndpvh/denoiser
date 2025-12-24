@@ -119,6 +119,17 @@
 #' consist of either 1 or 2 values. If only 1 value is provided, the measurement
 #' error variance will be assumed to be the same for both dimensions. Defaults 
 #' to \code{0.031^2}, a value that we have obtained experimentally.
+#' @param x0 Numeric vector containing the initial condition for the latent 
+#' state \eqn{\mathbf{x}}, containing a rough guess of the position and speed
+#' in the x- and y-dimension respectively and in that order. Defaults to 
+#' \code{NULL}, meaning that the initial condition represents the mean 
+#' observed values for each variable.
+#' @param P0 Numeric matrix containing the initial condition for the certainty
+#' around the predictions of the movement equation around the latent position
+#' \eqn{'mathbf{x}}, where this covariance is defined for the same variables 
+#' and in the same order as \code{x0}. Defaults to \code{NULL}, meaning that the
+#' observed variances for each variable are placed in a diagonal covariance 
+#' matrix. 
 #' 
 #' @return Named list containing all parameters relevant for the Kalman filter.
 #' 
@@ -145,7 +156,9 @@
 #'
 #' @export
 constant_velocity <- function(data,
-                              error = 0.031^2) {
+                              error = 0.031^2,
+                              x0 = NULL,
+                              P0 = NULL) {
 
     # Ensure the error variances contain two values.
     if(length(error) == 1) {
@@ -217,23 +230,27 @@ constant_velocity <- function(data,
     # Define the initial conditions for the latent state, reflected in the latent
     # position x_0 and the latent covariance P_0. I keep these very vague yet 
     # data-driven for a faster convergence.
-    x0 <- c(
-        mean(data$x, na.rm = TRUE), 
-        mean(data$y, na.rm = TRUE),
-        mean(data$speed_x, na.rm = TRUE),
-        mean(data$speed_y, na.rm = TRUE)
-    ) |>
-        matrix(ncol = 1)
+    if(is.null(x0)) {
+        x0 <- c(
+            mean(data$x, na.rm = TRUE), 
+            mean(data$y, na.rm = TRUE),
+            mean(data$speed_x, na.rm = TRUE),
+            mean(data$speed_y, na.rm = TRUE)
+        ) |>
+            matrix(ncol = 1)
+    }
     
-    P0 <- cbind(
-        data$x, 
-        data$y, 
-        data$speed_x, 
-        data$speed_y
-    ) |>
-        cov(use = "pairwise.complete.obs") |>
-        diag() |>
-        diag()
+    if(is.null(P0)) {
+        P0 <- cbind(
+            data$x, 
+            data$y, 
+            data$speed_x, 
+            data$speed_y
+        ) |>
+            cov(use = "pairwise.complete.obs") |>
+            diag() |>
+            diag()
+    }
 
     # Put everything in a list and return. This list looks different for the 
     # internal functions than for the kalman_filter function of the 
