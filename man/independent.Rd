@@ -39,6 +39,19 @@ Error is generated through a multivariate normal distribution with a
 assumption of this model is that the errors are independent over time, 
 which stands in contrast to the \code{\link[denoiser]{temporal()}} model.
 }
+\details{
+According to this function, the observed positions \eqn{\mathbf{y}_i} at time
+\eqn{t_i} contain some white noise error. In symbols, this comes down to 
+saying that:
+
+\deqn{\mathbf{\epsilon}_{i} \sim N(\mathbf{\mu}, \Sigma)}
+where \eqn{\mathbf{\mu}} represents the mean of the noise and \eqn{\Sigma}
+the covariance matrix of the noise. The observed positions \eqn{\mathbf{y}_i}
+then consist of a systematic component (i.e., the latent positions, provided
+in \code{data}) and an unsystematic error component so that:
+
+\deqn{\mathbf{y}_i = \mathbf{x}_i + \mathbf{\epsilon}_i}
+}
 \examples{
 # Generate data for illustration purposes. Movement in circular motion at a
 # pace of 1.27m/s with some added noise of SD = 10cm.
