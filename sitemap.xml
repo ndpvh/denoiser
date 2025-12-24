@@ -1,6 +1,10 @@
 <urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
 <url><loc>https://github.com/ndpvh/denoiser/404.html</loc></url>
 <url><loc>https://github.com/ndpvh/denoiser/LICENSE-text.html</loc></url>
+<url><loc>https://github.com/ndpvh/denoiser/articles/denoiser_vignette.html</loc></url>
+<url><loc>https://github.com/ndpvh/denoiser/articles/getting_started.html</loc></url>
+<url><loc>https://github.com/ndpvh/denoiser/articles/index.html</loc></url>
+<url><loc>https://github.com/ndpvh/denoiser/articles/noiser_vignette.html</loc></url>
 <url><loc>https://github.com/ndpvh/denoiser/authors.html</loc></url>
 <url><loc>https://github.com/ndpvh/denoiser/index.html</loc></url>
 <url><loc>https://github.com/ndpvh/denoiser/reference/bin.html</loc></url>

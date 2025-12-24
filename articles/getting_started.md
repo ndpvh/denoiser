@@ -1,0 +1,57 @@
+# Getting started
+
+## Installing and using the package
+
+To install the package, you can use the `remotes` package:
+
+``` r
+remotes::install_github("ndpvh/denoiser")
+```
+
+To load the package, use `library`
+
+``` r
+library(denoiser)
+```
+
+## Overview of the package
+
+The `denoiser` package was introduced to meet the need for a systematic
+way to add realistic noise to simulated positional data and, similarly,
+to filter out this noise within the same type of data. This need arose
+within our own research group with the definition of recovery studies
+for the [Minds for Mobile
+Agents](https://www.ampl-psych.com/projects/minds-for-mobile-agents/)
+pedestrian model with data that were simulated through the
+[predped](https://github.com/ndpvh/predped) package, but the package may
+apply more broadly to other research goals. Note, however, that the
+current implementation relies heavily on a set of calibration studies
+that we have carried out in our own lab, the results of which can be
+found in [this
+repository](https://github.com/ndpvh/calibration-movement-data).
+
+The package revolves around two primary functions. The `noiser` function
+adds noise to data that are provided by the user. Within the package, we
+refer to function that adds a particular type of noise as the
+“measurement model”, reflecting that we define how positional
+measurements relate to actual positions. Natively, we provide two such
+measurement models: One that assumes that measurement error is
+independent over time and one that does assume a temporal component to
+the measurement error, both of which are defined more extensively in the
+vignette on [Adding
+noise](https://ndpvh.github.io/denoiser/articles/noiser_vignette.html).
+However, we also allow users to specify the measurement model
+themselves, making the package more broadly applicable.
+
+The `denoiser` function filters out noise from the data that are
+provided by the user. By default, filtering will be through a Kalman
+filter that makes use of what we internally refer to as the “Kalman
+model”. Currently, we only provide one such model, namely the constant
+velocity model, the specification of which you can find in the vignette
+on [Filtering
+data](https://ndpvh.github.io/denoiser/articles/denoiser_vignette.html).
+Users can specify their own model, however, again making the package
+more broadly applicable. Besides the Kalman filter, the package also
+natively supports binning one’s data, although it doesn’t do so by
+default. Finally, users can provide their own filters to the package,
+further adding to the package’s usefulness.
