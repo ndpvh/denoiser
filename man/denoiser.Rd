@@ -86,7 +86,7 @@ denoiser(
     "x" = "X",
     "y" = "Y"
   ),
-  .by = "tag"
+  .by = "tag",
   model = "constant_velocity",
   error = 0.01,
   binned = TRUE,
