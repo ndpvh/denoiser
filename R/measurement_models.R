@@ -143,7 +143,7 @@ independent <- function(data,
 #' the system. Furthermore note that the covariance \eqn{\Sigma_\epsilon} of the 
 #' process \eqn{\mathbf{\epsilon}} is defined as:
 #' 
-#' \deqn{\Sigma_\epsilon = (I - \Theta)^{-2} \Sigma}
+#' \deqn{\Sigma_\epsilon = \Sigma - \Theta \Sigma \Theta^T}
 #' which is useful to keep in mind when specifying the covariance matrix 
 #' \eqn{\Sigma}, which is defined on the level of \eqn{\mathbf{\omega}}.
 #' 
