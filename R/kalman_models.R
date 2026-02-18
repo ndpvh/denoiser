@@ -113,9 +113,11 @@
 #' of the constant velocity model. This function assumes that this data.frame
 #' contains the columns \code{"time"}, \code{"x"}, and \code{"y"} containing 
 #' the time at which the observed position (x, y) was measured respectively. 
-#' @param error Numeric containing the assumed value of the measurement error 
-#' variance. Should consist of only 1 value. Defaults to \code{0.031^2}, a value 
-#' that we have obtained experimentally.
+#' @param error Numeric or numerical vector containing the assumed
+#' value of the measurement error variance in the x- and y-direction. Should 
+#' consist of either 1 or 2 values. If only 1 value is provided, the measurement
+#' error variance will be assumed to be the same for both dimensions. Defaults 
+#' to \code{0.031^2}, a value that we have obtained experimentally.
 #' @param x0 Numeric vector containing the initial condition for the latent 
 #' state \eqn{\mathbf{x}}, containing a rough guess of the position and speed
 #' in the x- and y-dimension respectively and in that order. Defaults to 
@@ -158,8 +160,11 @@ constant_velocity <- function(data,
                               P0 = NULL) {
 
     # Ensure the error variances contain two values.
-    if(length(error) > 1) {
-        error <- error[1]
+    if(length(error) == 1) {
+        error <- rep(error, 2)
+
+    } else if(length(error) > 2) {
+        error <- error[1:2]
     }
 
     # Preprocess the data to (a) be in chronological order, (b) contain the 
@@ -208,7 +213,7 @@ constant_velocity <- function(data,
         # Define the matrix
         M <- c(
             cos(dir)^4 * delta_t^2 * var_v, 0, cos(dir)^2 * delta_t * var_v, 
-            0, sin(dir)^4 * delta_t^2 * var_y, sin(dir)^2 * delta_t * var_v, 
+            0, sin(dir)^4 * delta_t^2 * var_v, sin(dir)^2 * delta_t * var_v, 
             cos(dir)^2 * delta_t * var_v, sin(dir)^2 * delta_t * var_v, var_v
         ) |>
             matrix(nrow = 3, ncol = 3, byrow = TRUE)
