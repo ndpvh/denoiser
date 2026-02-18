@@ -5,7 +5,7 @@
 \alias{kalman_models}
 \title{List of Kalman filter models}
 \format{
-An object of class \code{list} of length 1.
+An object of class \code{list} of length 2.
 }
 \usage{
 kalman_models

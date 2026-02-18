@@ -3,6 +3,7 @@
 export(bin)
 export(constant_velocity)
 export(denoiser)
+export(directional_constant_velocity)
 export(finalize)
 export(independent)
 export(kalman_filter)
