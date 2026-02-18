@@ -12,9 +12,11 @@ of the constant velocity model. This function assumes that this data.frame
 contains the columns \code{"time"}, \code{"x"}, and \code{"y"} containing 
 the time at which the observed position (x, y) was measured respectively.}
 
-\item{error}{Numeric containing the assumed value of the measurement error 
-variance. Should consist of only 1 value. Defaults to \code{0.031^2}, a value 
-that we have obtained experimentally.}
+\item{error}{Numeric or numerical vector containing the assumed
+value of the measurement error variance in the x- and y-direction. Should 
+consist of either 1 or 2 values. If only 1 value is provided, the measurement
+error variance will be assumed to be the same for both dimensions. Defaults 
+to \code{0.031^2}, a value that we have obtained experimentally.}
 
 \item{x0}{Numeric vector containing the initial condition for the latent 
 state \eqn{\mathbf{x}}, containing a rough guess of the position and speed
