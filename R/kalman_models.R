@@ -202,7 +202,7 @@ constant_velocity <- function(data,
     }
     
     denom <- mean(data$delta_t[-1], na.rm = TRUE)^2
-    var_v <- var(data$speed, na.rm = TRUE) - 2 * error / denom
+    var_v <- var(data$speed, na.rm = TRUE) - 2 * mean(error) / denom
     var_v <- ifelse(var_v <= 1e-10, 1e-10, var_v)
 
     W <- function(i) {
