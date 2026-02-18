@@ -20,7 +20,8 @@ test_that(
                     x = 1:10,
                     y = 1:10
                 ),
-                cols = cols
+                cols = cols,
+                model = "directional_constant_velocity"
             )
         )
 
@@ -32,7 +33,8 @@ test_that(
                     x = 1:10,
                     y = 1:10
                 ),
-                cols = cols
+                cols = cols,
+                model = "directional_constant_velocity"
             )
         )
 
@@ -43,7 +45,8 @@ test_that(
                     x = 1:10,
                     y = 1:10
                 ),
-                cols = 1:3
+                cols = 1:3,
+                model = "directional_constant_velocity"
             )
         )
     }
@@ -62,11 +65,12 @@ test_that(
         expect_warning(
             kalman_filter(
                 data,
-                N_min = 10
+                N_min = 10,
+                model = "directional_constant_velocity"
             )
         )
 
-        tst <- kalman_filter(data, N_min = 10) |>
+        tst <- kalman_filter(data, N_min = 10, model = "directional_constant_velocity") |>
             suppressWarnings()
         
         expect_equal(
@@ -105,7 +109,7 @@ test_that(
         # to this model
         tst <- kalman_filter(
             data,
-            model = "constant_velocity",
+            model = "directional_constant_velocity",
             cols = c(
                 "time" = "seconds",
                 "x" = "X",
@@ -152,7 +156,7 @@ test_that(
         # to this model
         tst <- kalman_filter(
             data,
-            model = "constant_velocity",
+            model = "directional_constant_velocity",
             cols = c(
                 "time" = "seconds",
                 "x" = "X",
