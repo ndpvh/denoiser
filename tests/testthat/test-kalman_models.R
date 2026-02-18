@@ -109,7 +109,7 @@ test_that(
 
         expect_equal(
             tst$B, 
-            matrix(0, nrow = 4, ncol = 1)
+            matrix(0, nrow = 3, ncol = 1)
         )
         expect_equal(
             tst$u, 
@@ -205,16 +205,16 @@ test_that(
 
         var_w <- 1e-10
         expect_equal(
-            tst$W(1),
+            tst$W(2),
             c(var_w, 0, var_w, 0, 0, var_w, 0, var_w) |>
                 rep(times = 2) |>
                 matrix(nrow = 4, ncol = 4, byrow = TRUE),
             tolerance = 1e-3
         )
         expect_equal(
-            tst$W(0.5),
-            c(0.25 * var_w, 0, 0.5 * var_w, 0, 0, 0.25 * var_w, 0, 0.5 * var_w,
-              0.5 * var_w, 0, var_w, 0, 0, 0.25 * var_w, 0, var_w) |>
+            tst$W(10),
+            c(var_w, 0, var_w, 0, 0, var_w, 0, var_w) |>
+                rep(times = 2) |>
                 matrix(nrow = 4, ncol = 4, byrow = TRUE),
             tolerance = 1e-3
         )
