@@ -17,6 +17,279 @@
 #'   x \\
 #'   y \\
 #' \end{bmatrix}_{i - 1} + \begin{bmatrix}
+#'   cos(\alpha)^2 \\
+#'   sin(\alpha)^2 \\
+#' \end{bmatrix} v \Delta t}
+#' 
+#' where \eqn{x} and \eqn{y} represent the x- and y-coordinates on which the 
+#' measurements at time \eqn{t_i} and \eqn{t_{i - 1}} were taken. The variable
+#' \eqn{v} represents the speed in the x- and y-plane when moving in a particular
+#' direction \eqn{\alpha}, and \eqn{\Delta t = t_i - t_{i - 1}} represents 
+#' the time between the two measurements. This is the basic equation from which 
+#' the parameters of the Kalman filter are derived.
+#' 
+#' For the constant velocity model, we keep track of the positional data and 
+#' the respective velocities at a particular time point \eqn{t_i}. This means 
+#' that the latent state \eqn{\mathbf{x}} consists of 4 values on each iteration, 
+#' namely:
+#' 
+#' \deqn{\mathbf{x}_i = \begin{bmatrix}
+#'   x \\
+#'   y \\
+#'   v \\
+#' \end{bmatrix}_i}
+#' 
+#' where \eqn{v_x = cos(\alpha)^2 v} and \eqn{v_y = sin(\alpha)^2 v}.
+#' 
+#' Under this specification, we define the transition matrix \eqn{F} and the 
+#' covariance matrix \eqn{W} of the movement equation as follows:
+#' 
+#' \deqn{F_i = \begin{bmatrix} 
+#'   1 & 0 & cos(\alpha)^2 \Delta t \\  
+#'   0 & 1 & sin(\alpha)^2 \Delta t \\
+#'   0 & 0 & 1 \\
+#' \end{bmatrix}_i}
+#' 
+#' \deqn{W_i = \begin{bmatrix}
+#'   cos(\alpha)^4 \Delta t^2 \sigma_v^2 & 0 & cos(\alpha)^2 \Delta t \sigma_v^2 \\
+#'   0 & sin(\alpha)^4 \Delta t^2 \sigma_v^2 & sin(\alpha)^2 \Delta t \sigma_v^2 \\
+#'   cos(\alpha)^2 \Delta t \sigma_v^2 & sin(\alpha)^2 \Delta t \sigma_v^2 & \sigma_v^2
+#' \end{bmatrix}_i}
+#' In these equations, \eqn{\Delta t} represents the time that has elapsed 
+#' between two observations, so that \eqn{\Delta t = t_i - t_{i - 1}}. The 
+#' variance \eqn{\sigma_{v}^2} captures the variation in the speed. We 
+#' additionally assume no covariances between the x- and y-dimensions, but there
+#' is covariation between these dimensions and the velocity. Within this 
+#' function, we estimate the variance \eqn{\sigma_v^2} through computing the 
+#' observed variance in the speeds and subtracting the assumed measurement error 
+#' from it, so that in the you obtain:
+#' 
+#' \deqn{\sigma_{v}^2 = VAR[v]^\text{obs} - 
+#' \frac{2}{E[\Delta t]^2} \sigma_{\epsilon}^2}
+#' 
+#' where \eqn{\sigma_{\epsilon}^2} is provided through the \code{error} 
+#' argument.
+#' 
+#' Typically, the movement equation also includes external forces that may 
+#' influence the observed behavior. In the constant velocity model described by
+#' this function, we assume that these parameters have no influence on the 
+#' observed behavior, meaning that we set its parameters \eqn{B} and 
+#' \eqn{\mathbf{u}} to 0.
+#' 
+#' For the measurement equation, we define the measurement matrix \eqn{H} and 
+#' the measurement error covariance matrix \eqn{R} as:
+#' 
+#' \deqn{H = \begin{bmatrix}
+#'   1 & 0 & 0 \\
+#'   0 & 1 & 0 \\
+#' \end{bmatrix}}
+#' 
+#' \deqn{R = \begin{bmatrix}
+#'   \sigma_\epsilon^2 & 0 \\
+#'   0 & \sigma_\epsilon^2
+#' \end{bmatrix}}
+#' where \eqn{\sigma_\epsilon^2} is provided through the \code{error}
+#' argument. Importantly, the matrix \eqn{R} is transformed to its Cholesky 
+#' decomposition, as the function \code{\link[denoiser]{kalman_filter}} assumes
+#' the Cholesky decomposition is provided for stability purposes.
+#' 
+#' Note that these two matrices are time-independent: They are assumed to be 
+#' constant at each iteration (long-term changes over time) and to not depend on 
+#' the time between obsevations \eqn{\Delta t}. Furthermore note that the 
+#' measurement error covariance \eqn{R} can only be defined for those variables
+#' that we have measurements on, namely the x- and y-coordinates. No such error
+#' exists for the speeds \eqn{v_x} and \eqn{v_y}. Similarly, note that the 
+#' measurement matrix \eqn{H} maps the predictions on the latent level to 
+#' predictions the measurement level, where it acknowledges that we only 
+#' measured x- and y-coordinates. 
+#' 
+#' Finally, we need to define the initial conditions from which the Kalman filter
+#' starts. These initial conditions are taken as the observed initial locations
+#' and speeds (in \eqn{\mathbf{x}_0}) and the observed variances of all 
+#' these variables (in \eqn{P_0}). Note that we provide a covariance matrix 
+#' \eqn{P_0} that is diagonal for simplicity. 
+#' 
+#' @param data A data.frame containing the data on which to base the parameters
+#' of the constant velocity model. This function assumes that this data.frame
+#' contains the columns \code{"time"}, \code{"x"}, and \code{"y"} containing 
+#' the time at which the observed position (x, y) was measured respectively. 
+#' @param error Numeric containing the assumed value of the measurement error 
+#' variance. Should consist of only 1 value. Defaults to \code{0.031^2}, a value 
+#' that we have obtained experimentally.
+#' @param x0 Numeric vector containing the initial condition for the latent 
+#' state \eqn{\mathbf{x}}, containing a rough guess of the position and speed
+#' in the x- and y-dimension respectively and in that order. Defaults to 
+#' \code{NULL}, meaning that the initial condition represents the mean 
+#' observed values for each variable.
+#' @param P0 Numeric matrix containing the initial condition for the certainty
+#' around the predictions of the movement equation around the latent position
+#' \eqn{'mathbf{x}}, where this covariance is defined for the same variables 
+#' and in the same order as \code{x0}. Defaults to \code{NULL}, meaning that the
+#' observed variances for each variable are placed in a diagonal covariance 
+#' matrix. 
+#' 
+#' @return Named list containing all parameters relevant for the Kalman filter.
+#' 
+#' @examples 
+#' # Generate data for illustration purposes. Movement in circular motion at a
+#' # pace of 1.27m/s with some added noise of SD = 10cm.
+#' # some added noise
+#' angles <- seq(0, 4 * pi, length.out = 100)
+#' coordinates <- 10 * cbind(cos(angles), sin(angles))
+#' coordinates <- coordinates + rnorm(200, mean = 0, sd = 0.1)
+#' 
+#' data <- data.frame(
+#'   x = coordinates[, 1],
+#'   y = coordinates[, 2],
+#'   time = 1:100
+#' )
+#' 
+#' # Generate the parameters of the Kalman filter according to the constant 
+#' # velocity model with an assumed measurement error variance of 0.01
+#' constant_velocity(
+#'   data, 
+#'   error = 0.1^2
+#' )
+#'
+#' @export
+constant_velocity <- function(data,
+                              error = 0.031^2,
+                              x0 = NULL,
+                              P0 = NULL) {
+
+    # Ensure the error variances contain two values.
+    if(length(error) > 1) {
+        error <- error[1]
+    }
+
+    # Preprocess the data to (a) be in chronological order, (b) contain the 
+    # times between observations, (c) contain the difference in position in
+    # each dimension, and (d) contain the speeds in each dimension
+    data <- data[order(data$time), ]
+
+    data$delta_t <- c(0, diff(data$time))
+    data$delta_x <- c(0, diff(data$x))
+    data$delta_y <- c(0, diff(data$y))
+
+    data$speed <- sqrt(data$delta_x^2 + data$delta_y^2) / data$delta_t
+    data$direction <- atan2(
+        data$delta_y, 
+        data$delta_x
+    )
+
+    # Define the movement equation parameters F and W. For W, we inform the 
+    # values of this matrix empirically, using error-corrected values of the 
+    # observed variances for this purpose.
+    F <- function(i) {
+        # Get the time interval and the direction out of here
+        delta_t <- data$delta_t[i]
+        dir <- data$direction[i]
+
+        # Define the matrix
+        M <- c(
+            1, 0, cos(dir)^2 * delta_t,
+            0, 1, sin(dir)^2 * delta_t,
+            0, 0, 1
+        ) |>
+            matrix(nrow = 3, ncol = 3, byrow = TRUE)
+
+        return(M)
+    }
+    
+    denom <- mean(data$delta_t[-1], na.rm = TRUE)^2
+    var_v <- var(data$speed, na.rm = TRUE) - 2 * error / denom
+    var_v <- ifelse(var_v <= 1e-10, 1e-10, var_v)
+
+    W <- function(i) {
+        # Get the time interval and the direction out of here
+        delta_t <- data$delta_t[i]
+        dir <- data$direction[i]
+
+        # Define the matrix
+        M <- c(
+            cos(dir)^4 * delta_t^2 * var_v, 0, cos(dir)^2 * delta_t * var_v, 
+            0, sin(dir)^4 * delta_t^2 * var_y, sin(dir)^2 * delta_t * var_v, 
+            cos(dir)^2 * delta_t * var_v, sin(dir)^2 * delta_t * var_v, var_v
+        ) |>
+            matrix(nrow = 3, ncol = 3, byrow = TRUE)
+
+        return(M)
+    }
+
+    # The external influences are assumed to amount to 0, which is reflected in 
+    # the matrices B and u below.
+    B <- matrix(0, nrow = 3, ncol = 1)
+    u <- matrix(0, nrow = nrow(data), ncol = 1)
+
+    # Define the measurement equation parameters H and R.
+    H <- c(1, 0, 0,
+           0, 1, 0) |>
+        matrix(nrow = 2, byrow = TRUE)
+        
+    R <- diag(error) |>
+        chol()
+
+    # Define the initial conditions for the latent state, reflected in the latent
+    # position x_0 and the latent covariance P_0. I keep these very vague yet 
+    # data-driven for a faster convergence.
+    if(is.null(x0)) {
+        x0 <- c(
+            mean(data$x, na.rm = TRUE), 
+            mean(data$y, na.rm = TRUE),
+            mean(data$speed, na.rm = TRUE)
+        ) |>
+            matrix(ncol = 1)
+    }
+    
+    if(is.null(P0)) {
+        P0 <- cbind(
+            data$x, 
+            data$y, 
+            data$speed
+        ) |>
+            cov(use = "pairwise.complete.obs") |>
+            diag() |>
+            diag()
+    }
+
+    # Put everything in a list and return. This list looks different for the 
+    # internal functions than for the kalman_filter function of the 
+    # package kalmanfilter.
+    return(
+        list(
+            "z" = data,       # Data to smooth
+            "x" = x0,         # Current value of x (prior mean)
+            "P" = P0,         # Current covariance of x (prior covariance)
+            "F" = F,          # Movement transition matrix
+            "W" = W,          # Movement covariance matrix
+            "B" = B,          # External variable transition matrix
+            "u" = u,          # External variables themselves
+            "H" = H,          # Measurement matrix
+            "R" = R           # Measurement covariance matrix
+        )
+    )
+}
+
+#' Directional constant velocity model
+#' 
+#' This model assumes that movement occurs at a constant velocity in the x- and
+#' y-direction, so that changes in acceleration in both dimensions are 
+#' considered to be noise. In a previous study, we found that this model 
+#' performed reasonably well on simulated and observed pedestrian data.
+#' 
+#' @details 
+#' The directional constant velocity model is based on the assumption that 
+#' velocity remains constant within both the x- and the y-direction, so that 
+#' acceleration in both directions can be put to 0. This means that we can use 
+#' the following movement equation to model changes in the positions, so that:
+#' 
+#' \deqn{\begin{bmatrix}
+#'   x \\
+#'   y \\
+#' \end{bmatrix}_i = \begin{bmatrix}
+#'   x \\
+#'   y \\
+#' \end{bmatrix}_{i - 1} + \begin{bmatrix}
 #'   v_x \\
 #'   v_y \\
 #' \end{bmatrix} \Delta t}
@@ -147,18 +420,18 @@
 #'   time = 1:100
 #' )
 #' 
-#' # Generate the parameters of the Kalman filter according to the constant 
-#' # velocity model with an assumed measurement error variance of 0.01
-#' constant_velocity(
+#' # Generate the parameters of the Kalman filter according to the directional
+#' # constant velocity model with an assumed measurement error variance of 0.01
+#' directional_constant_velocity(
 #'   data, 
 #'   error = 0.1^2
 #' )
 #'
 #' @export
-constant_velocity <- function(data,
-                              error = 0.031^2,
-                              x0 = NULL,
-                              P0 = NULL) {
+directional_constant_velocity <- function(data,
+                                          error = 0.031^2,
+                                          x0 = NULL,
+                                          P0 = NULL) {
 
     # Ensure the error variances contain two values.
     if(length(error) == 1) {
@@ -183,7 +456,8 @@ constant_velocity <- function(data,
     # Define the movement equation parameters F and W. For W, we inform the 
     # values of this matrix empirically, using error-corrected values of the 
     # observed variances for this purpose.
-    F <- function(delta_t) {
+    F <- function(i) {
+        delta_t <- data$delta_t[i]
         M <- c(
             1, 0, delta_t, 0,
             0, 1, 0, delta_t,
@@ -202,7 +476,8 @@ constant_velocity <- function(data,
     var_x <- ifelse(var_x <= 1e-10, 1e-10, var_x)
     var_y <- ifelse(var_y <= 1e-10, 1e-10, var_y)
 
-    W <- function(delta_t) {
+    W <- function(i) {
+        delta_t <- data$delta_t[i]
         M <- c(
             delta_t^2 * var_x, 0, delta_t * var_x, 0, 
             0, delta_t^2 * var_y, 0, delta_t * var_y, 
@@ -273,4 +548,7 @@ constant_velocity <- function(data,
 #' List of Kalman filter models
 #' 
 #' @export
-kalman_models <- list("constant_velocity" = constant_velocity)
+kalman_models <- list(
+    "constant_velocity" = constant_velocity,
+    "directional_constant_velocity" = directional_constant_velocity
+)
