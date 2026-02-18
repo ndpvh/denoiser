@@ -37,7 +37,7 @@ The Kalman filter is a popular filtering technique often encountered in time-ser
 \begin{equation}
   \bm{x}_i = F \bm{x}_{i - 1} + B \bm{u}_i + \bm{\epsilon}_{i}
 \end{equation}
-where $\bm{x}_i$ contains the values of the relevant latent variables at time $t_i$, $F$ is the matrix relating values of these latent variables at a previous time point to the next one, $B$ is a matrix that scales the values of exogeneous inputs $\bm{u}$, and $\bm{\epsilon} represents noise at the latent level. Similarly, the measurement equation can be defined through specifying the parameters of the following equation:
+where $\bm{x}_i$ contains the values of the relevant latent variables at time $t_i$, $F$ is the matrix relating values of these latent variables at a previous time point to the next one, $B$ is a matrix that scales the values of exogeneous inputs $\bm{u}$, and $\bm{\epsilon}$ represents noise at the latent level. Similarly, the measurement equation can be defined through specifying the parameters of the following equation:
 
 \begin{equation}
   \bm{z}_i = H \bm{x}_i + \bm{y}_i
@@ -123,15 +123,92 @@ This concludes the three-step procedure of the Kalman filter, after which it wil
 
 Up to now, the discussion has been quite vague: It has specified how the Kalman filter works without going into details of what each of its parameters represents. The strength of the Kalman filter is exactly this generality. It works for any set of movement and measurement equations that can fit within the general structure outlined above. As to how to define these equations, that's left up to the user.
 
-Within the `denoiser` package, we specify only a single set of movement and measurement equations that are used to filter the data. This model is called the _constant velocity_ model, reflecting its underlying assumption that the subject is moving at constant velocity, meaning changes in acceleration are taken as part of the measurement error. This model was used in our previous project and has been found to be (somewhat) effective at handling the measurement error observed in our experiments, which is why it is included here. 
+Within the `denoiser` package, we specify two sets of movement and measurement equations that are used to filter the data, both being separate versions of the _constant velocity_ model, which assumes that the subject is moving at constant velocity, meaning changes in acceleration are taken as part of the measurement error. This model was used in our previous project and has been found to be (somewhat) effective at handling the measurement error observed in our experiments, which is why it is included here. 
 
-In this vignette, I will focus mostly on the definition of the parameters rather than the reasoning behind the model. For this, I refer the interested reader to the explanation of the [constant_velocity](https://ndpvh.github.io/denoiser/reference/constant_velocity.html) function instead.
+In this vignette, I will focus mostly on the definition of the parameters rather than the reasoning behind the model. For this, I refer the interested reader to the explanation of the [constant_velocity](https://ndpvh.github.io/denoiser/reference/constant_velocity.html) or [directional_constant_velocity](https://ndpvh.github.io/denoiser/reference/directional_constant_velocity.html) functions instead.
 
 
 
-#### Constant velocity model 
+#### Constant velocity model
 
 The constant velocity model operates under the assumption that the latent position changes in the following way:
+
+\begin{equation}
+  \begin{bmatrix}
+    x \\
+    y
+  \end{bmatrix}_i = \begin{bmatrix}
+    x \\
+    y
+  \end{bmatrix}_{i - 1} + v \begin{bmatrix}
+    cos(\alpha)^2 \\
+    sin(\alpha)^2
+  \end{bmatrix} \Delta t
+\end{equation}
+where $v$ represents the constant speed at which a subject moves in a particular direction $\alpha$, and where $\Delta t$ represents the time interval between observations. The speed in each of the two dimensions x and y is weighted according to the direction in which they go, with a maximal speed in the y-direction when a person moves at 90 or 270 degrees and with a maximal speed in the x-direction when a person moves at 0 or 180 degrees. Under this specification, we have to define the latent state $\bm{x}$ as a three-dimensional vector, taking into account both position and speed so that:
+
+\begin{equation}
+  \bm{x}_i = \begin{bmatrix}
+    x \\
+    y \\
+    v
+  \end{bmatrix}_i
+\end{equation}
+
+For the movement equation, we then have to define the three-dimensional matrix $F$ and $W$, both of which depend on the direction $\alpha$ and the time interval $\Delta t$, so that:
+
+\begin{equation}
+  F_i = \begin{bmatrix} 
+    1 & 0 & cos(\alpha)^2 \Delta t \\  
+    0 & 1 & sin(\alpha)^2 \Delta t \\
+    0 & 0 & 1 
+  \end{bmatrix}_i
+\end{equation}
+
+\begin{equation}
+  W_i = \begin{bmatrix}
+    cos(\alpha)^4 \Delta t^2 \sigma_{v}^2 & 0 & cos(\alpha)^2 \Delta t \sigma_{v}^2  \\
+    0 & sin(\alpha)^4 \Delta t^2 \sigma_{v}^2 & sin(\alpha)^2 \Delta t \sigma_{v}^2 \\
+    cos(\alpha)^2 \Delta t \sigma_{v}^2 & sin(\alpha)^2 \Delta t \sigma_{v}^2 & \sigma_{v}^2
+  \end{bmatrix}_i
+\end{equation}
+Notice that if you compute $F_i \bm{x}_{i - 1}$, you will get back the original equation for $x$ and $y$, showing that these parameters do indeed conform to our assume movement equation. Furthermore note that $W_i$ can be obtained by assuming some error on the speed $v$ and, similarly, working this out according to the movement equation denoted above.
+
+For the measurement equation, we have to define the measurement matrix $H$ which connects the underlying latent movement model and the observations that we make. In `denoiser`, we assume that we only measured positions without any indication of speeds, meaning that our measurement matrix $H$ will have to reduce information so that:
+
+\begin{equation}
+  H = \begin{bmatrix}
+    1 & 0 & 0 \\
+    0 & 1 & 0
+  \end{bmatrix}
+\end{equation}
+Again notice that using this measurement matrix on the previously computed values of $F_i \bm{x}_{i - 1}$, you will automatically get back the movement equation denoted above in terms of $x$ and $y$.
+
+On the level of the measurement equation, we also have to define the measurement covariance matrix R, which for our purposes is defined as:
+
+\begin{equation}
+  R = \begin{bmatrix}
+    \sigma_R^2 & 0 \\
+    0 & \sigma_R^2
+  \end{bmatrix}
+\end{equation}
+
+In its current specification, there are still several parameters that need to be specified by the user. This includes the initial conditions $\bm{x}_0$ and $P_0$, the measurement variance $\sigma_R^2$, and the movement variance $\sigma_{v}^2$.
+
+In `denoiser`, we specify broad though data-driven priors. Specifically, we defined the initial condition $\bm{x}_0$ as the vector of mean x- and y-positions alongside mean speed. The prior covariance matrix $P_0$ is defined as the diagonal matrix of observed variances for these same variables in $\bm{x}_0$. These broad priors were defined for practical utility, but may not be fit for each use-case. 
+
+For the variances, we require users to specify the assumed error variance $\sigma_R^2$ through the `error` argument (see later). Based on the provided error variance and the observed variances in the data, we then specify the speed variance to be:
+
+\begin{equation}
+  \sigma_{v}^2 = \sigma^\text{obs} - \frac{2}{E[\Delta t]^2} \sigma_R^2
+\end{equation}
+therefore dividing up the observed variance in a measurement error component (second part on right-hand side) and a movement component (left-hand side). Note that these variances of the speeds are computed for both dimensions separately.
+
+
+
+#### Directional constant velocity model 
+
+Another variant of the constant velocity model operates under the assumption that the latent position changes in the following way:
 
 \begin{equation}
   \begin{bmatrix}
@@ -156,7 +233,7 @@ where $v_x$ and $v_y$ represent the speed in dimensions x and y, and where $\Del
   \end{bmatrix}_i
 \end{equation}
 
-For the movement equation, we then have to define the four-dimensional matrix $F$ and $W$, both of which depend on time interval $\Delta t$, so that:
+For the movement equation, we then define the four-dimensional matrix $F$ and $W$ so that:
 
 \begin{equation}
   F_i = \begin{bmatrix} 
@@ -175,9 +252,8 @@ For the movement equation, we then have to define the four-dimensional matrix $F
     0 & \Delta t \sigma_{v_y}^2 & 0 & \sigma_{v_y}^2
   \end{bmatrix}_i
 \end{equation}
-Notice that if you fill compute $F_i \bm{x}_{i - 1}$, you will get back the original equation for $x$ and $y$, showing that these parameters do indeed conform to our assume movement equation. Furthermore note that $W_i$ can be obtained by assuming some error on the speed variables $v_x$ and $v_y$ and, similarly, working this out according to the movement equation denoted above.
 
-For the measurement equation, we have to define the measurement matrix $H$ which connects the underlying latent movement model and the observations that we make. In `denoiser`, we assume that we only measured positions without any indication of speeds, meaning that our measurement matrix $H$ will have to reduce information so that:
+For the measurement equation, we have to define the measurement matrix $H$, again assuming that we only measured positions without any indication of speeds, so that:
 
 \begin{equation}
   H = \begin{bmatrix}
@@ -185,9 +261,7 @@ For the measurement equation, we have to define the measurement matrix $H$ which
     0 & 1 & 0 & 0
   \end{bmatrix}
 \end{equation}
-Again notice that using this measurement matrix on the previously computed values of $F_i \bm{x}_{i - 1}$, you will automatically get back the movement equation denoted above in terms of $x$ and $y$.
-
-On the level of the measurement equation, we also have to define the measurement covariance matrix R, which for our purposes is defined as:
+The measurement covariance matrix R is defined as:
 
 \begin{equation}
   R = \begin{bmatrix}
@@ -196,16 +270,7 @@ On the level of the measurement equation, we also have to define the measurement
   \end{bmatrix}
 \end{equation}
 
-In its current specification, there are still several parameters that need to be specified by the user. This includes the initial conditions $\bm{x}_0$ and $P_0$, the measurement variance $\sigma_R^2$, and the movement variances $\sigma_{v_x}^2$ and $\sigma_{v_y}^2$.
-
-In `denoiser`, we specify broad though data-driven priors. Specifically, we defined the initial condition $\bm{x}_0$ as the vector of mean x- and y-positions alongside mean speeds in the x- and y-direction. The prior covariance matrix $P_0$ is defined as the diagonal matrix of observed variances for these same variables in $\bm{x}_0$. These broad priors were defined for practical utility, but may not be fit for each use-case. 
-
-For the variances, we require users to specify the assumed error variance $\sigma_R^2$ through the `error` argument (see later). Based on the provided error variance and the observed variances in the data, we then specify the speed variances to be:
-
-\begin{equation}
-  \sigma_{v}^2 = \sigma^\text{obs} - \frac{2}{E[\Delta t]^2} \sigma_R^2
-\end{equation}
-therefore dividing up the observed variance in a measurement error component (second part on right-hand side) and a movement component (left-hand side). Note that these variances of the speeds are computed for both dimensions separately.
+For the parameters that still need to be defined -- namely, the initial conditions $\bm{x}_0$ and $P_0$, the measurement variance $\sigma_R^2$, and the movement variances $\sigma_{v_x}^2$ and $\sigma_{v_y}^2$ -- we specify broad data-driven priors in a similar way to the _constant velocity model_ and compute the speed-related variances in the same way as before, yet for each dimension separately.
 
 
 
@@ -341,7 +406,7 @@ First, the function should use the data structure that is assumed within the who
 
 Second, the function should in the least take as input `data`, but can take in more arguments. When using the `denoiser` function, you can specify the value for these arguments next to the specification of the model: Their value will be given to the function provided in `model` in the same way that the value of `error` in our examples is handed down to the `constant_velocity` function. 
 
-Finally, the function should output a named list containing values for `"z"` (the data to be smoothed), `"x"` and `"P"` (initial conditions), `"F"`, `"W"`, and `"B"` (parameters of the movement equation), `"u"` (values for the exogeneous variables), and `"H"` and `"R"` (parameters of the measurement equation). The Kalman filter assumes that the values of `"F"` and `"W"` are functions that take in a single argument, namely the time between observations $\Delta t$ (see again the equations above). It is furthermore also assumed that the data provided to `"z"` contains the columns `x` and `y` (containing the measured positions) and `delta_t` (containing the time since the previous observation).
+Finally, the function should output a named list containing values for `"z"` (the data to be smoothed), `"x"` and `"P"` (initial conditions), `"F"`, `"W"`, and `"B"` (parameters of the movement equation), `"u"` (values for the exogeneous variables), and `"H"` and `"R"` (parameters of the measurement equation). The Kalman filter assumes that the values of `"F"` and `"W"` are functions that take in a single argument, namely the index $i$ of the data that is smoothed, allowing the Kalman filter to use information within the data, such as the orientation or the time interval (see again the equations above). It is furthermore also assumed that the data provided to `"z"` contains the columns `x` and `y` (containing the measured positions) and `delta_t` (containing the time since the previous observation).
 
 
 
