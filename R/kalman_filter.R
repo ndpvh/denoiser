@@ -216,6 +216,8 @@ kalman_filter <- function(data,
                     innovation[["K"]]
                 )
 
+                print(innovation[["K"]])
+
                 # Save the results in the smoothed dataset.
                 smoothed[i, c("x", "y")] <- result[["x"]][1:2]
 

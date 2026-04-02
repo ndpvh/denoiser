@@ -181,6 +181,21 @@ constant_velocity <- function(data,
         data$delta_y, 
         data$delta_x
     )
+    data[-1, ]
+
+    ############################################################################
+    # NOTE TO SELF: PROBLEM IN THIS ONE SEEMS TO BE THAT THERE IS DOULBE NOISE,
+    # ONCE IN THE VELOCITY AND ONCE IN THE ORIENTATION/DIRECTION. IS THERE A 
+    # POSSBILITY OF FILTERING THESE TOGETHER IN A WAY THAT YOU GET A 5D MATRIX?
+    # OHTERWISE REDUCES TO THE DIRECTIONAL_CONSTANT_VELOCITY MODEL BELOW, 
+    # WITH A SIGN DIFFERENCE THOUGH
+    #
+    # THE KALMAN GAIN DOES NOT CONVERGE, WHICH IS NOT A GOOD SIGN!
+    #
+    # SEVERAL THINGS I CAN DO
+    #   - REWORK F and W TO SEPARATE VELOCITY AND DIRECTION
+    #   - SMOOTH DIRECTION, THEN USE IT TO INFORM THIS ONE
+    #   - PREFERABLY, DO BOTH AT THE SAME TIME!
 
     # Define the movement equation parameters F and W. For W, we inform the 
     # values of this matrix empirically, using error-corrected values of the 
@@ -192,8 +207,8 @@ constant_velocity <- function(data,
 
         # Define the matrix
         M <- c(
-            1, 0, cos(dir)^2 * delta_t,
-            0, 1, sin(dir)^2 * delta_t,
+            1, 0, cos(dir) * delta_t,
+            0, 1, sin(dir) * delta_t,
             0, 0, 1
         ) |>
             matrix(nrow = 3, ncol = 3, byrow = TRUE)
@@ -212,9 +227,9 @@ constant_velocity <- function(data,
 
         # Define the matrix
         M <- c(
-            cos(dir)^4 * delta_t^2 * var_v, 0, cos(dir)^2 * delta_t * var_v, 
-            0, sin(dir)^4 * delta_t^2 * var_v, sin(dir)^2 * delta_t * var_v, 
-            cos(dir)^2 * delta_t * var_v, sin(dir)^2 * delta_t * var_v, var_v
+            cos(dir)^2 * delta_t^2 * var_v, 0, cos(dir) * delta_t * var_v, 
+            0, sin(dir)^2 * delta_t^2 * var_v, sin(dir) * delta_t * var_v, 
+            cos(dir) * delta_t * var_v, sin(dir) * delta_t * var_v, var_v
         ) |>
             matrix(nrow = 3, ncol = 3, byrow = TRUE)
 

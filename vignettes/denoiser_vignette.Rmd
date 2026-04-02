@@ -328,10 +328,35 @@ Now that the data have been created, we can attempt to filter these data through
 #| fig.cap: >
 #|   _Filtered positions as achieved through the `denoiser` function._
 
+# Define the simulated angles of the observations
+angles <- seq(0, 2 * pi, length.out = 50) |>
+  rep(times = 1000)
+
+# Define the dataset itself
+data <- data.frame(
+  time = 1:length(angles), 
+  x = 10 * cos(angles),
+  y = 10 * sin(angles)
+)
+
+# Add noise to the data
+data <- noiser(
+  data, 
+  model = "independent",
+  mean = c(0, 0), 
+  covariance = diag(2) * 0.5
+)
+
 # Add noise to the data
 denoised <- denoiser(
   data, 
   model = "constant_velocity",
+  error = 0.5
+)
+
+denoised <- denoiser(
+  data, 
+  model = "directional_constant_velocity",
   error = 0.5
 )
 
