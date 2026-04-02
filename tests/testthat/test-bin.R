@@ -200,3 +200,40 @@ test_that(
         expect_identical(ref, tst)
     }
 )
+
+test_that(
+    "Test outcome of the `bin` function: Additional columns",
+    {
+        # Create a mock dataset that will lead to results that we know 
+        # analytically
+        data <- data.frame(
+            seconds = rep(1:20 / 5, times = 2),
+            tag = rep(1:2, each = 20),
+            xco = rep(1:20, times = 2),
+            yco = rep(20:1, times = 2),
+            column = 1:40
+        )
+
+        # Use the bin function with the mean
+        tst <- bin(
+            data, 
+            fx = mean,
+            span = 1,
+            .by = "tag",
+            cols = c(
+                "x" = "xco",
+                "time" = "seconds",
+                "y" = "yco",
+                "var" = "column"
+            )
+        )
+
+        # Perform the test: Note that we always picked the middle of the column
+        # where there were 5 options for each, so differences should be about 
+        # 5 for each
+        expect_equal(
+            tst$column, 
+            c(3, 9, 14, 18, 23, 29, 34, 38)
+        )
+    }
+)
