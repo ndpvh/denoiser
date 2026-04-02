@@ -1,7 +1,7 @@
 Package: denoiser
 Type: Package
 Title: Noising and denoising spatial data
-Version: 0.1.0
+Version: 0.1.1
 Date: 2025-12-19
 Description: 
     Noiser and denoiser functions to be used for preprocessing spatial data. 

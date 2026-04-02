@@ -99,3 +99,59 @@ test_that(
         )
     }
 )
+
+test_that(
+    "Test whether non-default columns are retained",
+    {
+        # Create a mock dataset to be prepared
+        data <- data.frame(
+            time = rep(1:5, times = 2),
+            id = rep(1:2, each = 5),
+            x = rep(1:5, times = 2),
+            y = rep(5:1, times = 2),
+            column_1 = rep(1, times = 10),
+            column_2 = rep(2, times = 10),
+            column_3 = rep(3, times = 10),
+            column_4 = 1:10
+        )
+
+        # Prepare the dataset
+        prepared <- prepare(
+            data,
+            cols = c(
+                "time" = "time",
+                "x" = "x",
+                "y" = "y",
+                "var_1" = "column_1",
+                "var_2" = "column_2",
+                "var_3" = "column_3",
+                "var_4" = "column_4"
+            ),
+            .by = "id"
+        )
+
+        # Check the column names
+        expect_equal(
+            colnames(prepared$data),
+            c("time", "x", "y", "var_1", "var_2", "var_3", "var_4", "id")
+        )
+
+        # Check the content
+        expect_equal(
+            prepared$data$var_1, 
+            rep(1, 10)
+        )
+        expect_equal(
+            prepared$data$var_2, 
+            rep(2, 10)
+        )
+        expect_equal(
+            prepared$data$var_3, 
+            rep(3, 10)
+        )
+        expect_equal(
+            prepared$data$var_4,
+            1:10
+        )
+    }
+)

@@ -75,12 +75,13 @@ bin <- function(data,
     data <- preparation$data
 
     # Instantiate a mock data.frame. Will be updated repeatedly in the loops
-    mock <- data.frame(
-        time = 0, 
-        id = 0, 
-        x = 0,
-        y = 0
-    )
+    mock <- matrix(0, nrow = 1, ncol = length(cols)) |>
+        as.data.frame() |>
+        `colnames<-` (names(cols))
+
+    # Define the non-general columns names, that is those who do not need special
+    # treatment for the binning
+    add_cols <- names(cols)[!(names(cols) %in% c("time", "x", "y", "id"))]
 
     # Go over each of the data points and smooth the data using the moving 
     # window. We dispatch/loop over all the different possibilities in the 
@@ -120,6 +121,9 @@ bin <- function(data,
                     mock$id <- group[i]
                     mock$x <- fx(data_j$x)
                     mock$y <- fx(data_j$y)
+
+                    # For additional columns, take the middle option of the bin
+                    mock[, add_cols] <- data_j[ceiling(nrow(data_j) / 2), add_cols]
 
                     # Return this
                     return(mock)

@@ -2,7 +2,7 @@
 
 <!-- badges: start -->
 
-[![GitHub Release](https://img.shields.io/badge/release-v0.1.0-blue)](https://github.com/ndpvh/denoiser/releases)
+[![GitHub Release](https://img.shields.io/badge/release-v0.1.1-blue)](https://github.com/ndpvh/denoiser/releases)
 [![GitHub License](https://img.shields.io/github/license/ndpvh/denoiser)](https://github.com/ndpvh/denoiser/blob/main/LICENSE)
 [![Documentation](https://img.shields.io/badge/documentation-gray)](https://ndpvh.github.io/denoiser)
 [![R-CMD-check](https://github.com/ndpvh/denoiser/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/ndpvh/denoiser/actions/workflows/R-CMD-check.yaml)

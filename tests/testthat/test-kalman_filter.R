@@ -188,3 +188,46 @@ test_that(
         expect_true(tst_y < data_y)
     }
 )
+
+test_that(
+    "Test output of the Kalman filter with an additional column",
+    {
+        # Generate data for illustration purposes. Movement in circular motion at a
+        # pace of 1.27m/s
+        angles <- seq(0, 4 * pi, length.out = 100)
+        coordinates <- 10 * cbind(cos(angles), sin(angles))
+
+        # Add some error of about 10cm in standard deviation and create a new 
+        # data.frame to be used in the Kalman filter.
+        set.seed(1)
+        coordinates <- coordinates + rnorm(200, mean = 0, sd = 1)        
+        data <- data.frame(
+            seconds = 1:100,
+            X = coordinates[, 1],
+            Y = coordinates[, 2],
+            column = 2 * (1:100)
+        )
+        
+        # Use the Kalman filter with the constant velocity model on these data to 
+        # filter out the measurement error. Provide an assumed variance of 1m 
+        # to this model
+        tst <- kalman_filter(
+            data,
+            model = "constant_velocity",
+            cols = c(
+                "time" = "seconds",
+                "x" = "X",
+                "y" = "Y",
+                "var" = "column"
+            ),
+            error = 1
+        )
+
+        # Mean noise should be smaller for the Kalman filter than for the 
+        # unfiltered data
+        expect_equal(
+            colnames(tst),
+            c("seconds", "X", "Y", "column")
+        )
+    }
+)

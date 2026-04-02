@@ -102,3 +102,47 @@ test_that(
         )
     }
 )
+
+test_that(
+    "Test whether `finalize` undoes what `prepare` does for additional columns",
+    {
+        # Create a mock dataset that can be prepared
+        data <- data.frame(
+            seconds = rep(1:5, times = 2),
+            xco = rep(1:5, times = 2),
+            yco = rep(5:1, times = 2),
+            tag = rep(1:2, each = 5),
+            column_1 = 1:10
+        )
+
+        # Prepare the data
+        prepared <- prepare(
+            data, 
+            cols = c(
+                "time" = "seconds",
+                "x" = "xco",
+                "y" = "yco",
+                "var_1" = "column_1"
+            ),
+            .by = "tag"
+        )
+
+        # Finalize the data
+        finalized <- finalize(
+            prepared$data, 
+            cols = c(
+                "time" = "seconds",
+                "x" = "xco",
+                "y" = "yco",
+                "id" = "tag",
+                "var_1" = "column_1"
+            ),
+            .by = "tag"
+        )
+
+        expect_equal(
+            data,
+            finalized
+        )
+    }
+)
