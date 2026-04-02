@@ -2,10 +2,10 @@
 
 The second important functionality of the package is to filter
 positional data to get rid of the noise inherent to these data. This is
-a useful feature both when setting up recovery studies and when trying
-to analyze your own positional data. The primary function to use when
-filtering data is `denoiser`, the functionality of which will be
-explained in this vignette.
+a useful feature both when setting up parameter recovery studies and
+when trying to analyze your own positional data. The primary function to
+use when filtering data is `denoiser`, the functionality of which will
+be explained in this vignette.
 
 ## Filters
 

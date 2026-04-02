@@ -36,9 +36,8 @@ refer to function that adds a particular type of noise as the
 “measurement model”, reflecting that we define how positional
 measurements relate to actual positions. Natively, we provide two such
 measurement models: One that assumes that measurement error is
-independent over time and one that does assume a temporal component to
-the measurement error, both of which are defined more extensively in the
-vignette on [Adding
+independent over time and one that assumes temporal dependency, both of
+which are defined more extensively in the vignette on [Adding
 noise](https://ndpvh.github.io/denoiser/articles/noiser_vignette.html).
 However, we also allow users to specify the measurement model
 themselves, making the package more broadly applicable.
@@ -53,5 +52,5 @@ data](https://ndpvh.github.io/denoiser/articles/denoiser_vignette.html).
 Users can specify their own model, however, again making the package
 more broadly applicable. Besides the Kalman filter, the package also
 natively supports binning one’s data, although it doesn’t do so by
-default. Finally, users can provide their own filters to the package,
-further adding to the package’s usefulness.
+default. Finally, users can provide their own filters, further adding to
+the package’s usefulness.

@@ -1,10 +1,11 @@
 # Adding noise
 
 The first important functionality of the package is to add noise to
-positional data. This is a useful feature when setting up recovery
-studies, especially if one wants to preserve some type of “realism” in
-these studies. The primary function to “noise up” the data is `noiser`,
-the functionality of which will be explained in this section.
+positional data. This is a useful feature when setting up parameter
+recovery studies, especially if one wants to preserve some type of
+“realism” in these studies. The primary function to “noise up” the data
+is `noiser`, the functionality of which will be explained in this
+section.
 
 ## Measurement model
 
