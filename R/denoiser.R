@@ -23,6 +23,8 @@
 #' \code{NULL}, therefore assuming the structure explained in \code{data}.
 #' @param .by String denoting whether the moving window should be taken with 
 #' respect to a given grouping variable. Defaults to \code{NULL}.
+#' @param kalman Logical denoting whether to apply the Kalman filter
+#' (\code{TRUE}) or skip it (\code{FALSE}). Defaults to \code{TRUE}.
 #' @param binned Logical denoting whether to also bin the data (\code{TRUE}) or
 #' to leave the data unbinned (\code{FALSE}). Defaults to \code{FALSE}.
 #' @param span Numeric denoting the size of the bins. Will pertain to the values
@@ -85,6 +87,7 @@
 denoiser <- function(data,
                      cols = NULL,
                      .by = NULL,
+                     kalman = TRUE,
                      binned = FALSE,
                      span = 0.5,
                      fx = mean,
@@ -92,12 +95,14 @@ denoiser <- function(data,
                      ...) {
 
     # Perform the Kalman filter to smooth the data
-    data <- kalman_filter(
-        data,
-        cols = cols,
-        .by = .by,
-        ...
-    )
+    if(kalman) {
+        data <- kalman_filter(
+            data,
+            cols = cols,
+            .by = .by,
+            ...
+        )
+    }
 
     # If asked for, also bin the data
     if(binned) {

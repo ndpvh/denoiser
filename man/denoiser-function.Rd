@@ -8,6 +8,7 @@ denoiser(
   data,
   cols = NULL,
   .by = NULL,
+  kalman = TRUE,
   binned = FALSE,
   span = 0.5,
   fx = mean,
@@ -32,6 +33,9 @@ contain the corresponding column names in that dataset. Defaults to
 
 \item{.by}{String denoting whether the moving window should be taken with 
 respect to a given grouping variable. Defaults to \code{NULL}.}
+
+\item{kalman}{Logical denoting whether to apply the Kalman filter
+(\code{TRUE}) or skip it (\code{FALSE}). Defaults to \code{TRUE}.}
 
 \item{binned}{Logical denoting whether to also bin the data (\code{TRUE}) or
 to leave the data unbinned (\code{FALSE}). Defaults to \code{FALSE}.}
