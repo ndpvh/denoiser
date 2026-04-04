@@ -4,31 +4,36 @@
 \alias{bin}
 \title{Bin observations}
 \usage{
-bin(data, span = 0.5, fx = mean, cols = NULL, .by = NULL)
+bin(data, span = 0.5, fx = mean, cols = NULL, thin = NULL, .by = NULL)
 }
 \arguments{
-\item{data}{Dataframe that contains information on location (x- and 
-y-coordinates) and the time at which the measurement was taken. By default, 
-\code{\link[denoiser]{bin()}} will assume that this information is contained 
-within the columns \code{"x"}, \code{"y"}, and \code{"time"} respectively. 
-If this isn't the case, either change the column names in the data or specify 
+\item{data}{Dataframe that contains information on location (x- and
+y-coordinates) and the time at which the measurement was taken. By default,
+\code{\link[denoiser]{bin()}} will assume that this information is contained
+within the columns \code{"x"}, \code{"y"}, and \code{"time"} respectively.
+If this isn't the case, either change the column names in the data or specify
 the \code{cols} argument.}
 
 \item{span}{Numeric denoting the size of the bins. Will pertain to the values
 in the \code{"time"} variable. Defaults to \code{0.5}.}
 
 \item{fx}{Function to execute on the data that falls within the bin. Will be
-executed on the \code{"x"} and \code{"y"} columns separately and should ouput 
+executed on the \code{"x"} and \code{"y"} columns separately and should ouput
 only a single value. Defaults to the function \code{\link[base]{mean()}}.}
 
 \item{cols}{Named vector or named list containing the relevant column names
-in \code{data} if they didn't contain the prespecified column names 
-\code{"time"}, \code{"x"}, and \code{"y"}. The labels should conform to these 
-prespecified column names and the values given to these locations should 
-contain the corresponding column names in that dataset. Defaults to 
+in \code{data} if they didn't contain the prespecified column names
+\code{"time"}, \code{"x"}, and \code{"y"}. The labels should conform to these
+prespecified column names and the values given to these locations should
+contain the corresponding column names in that dataset. Defaults to
 \code{NULL}, therefore assuming the structure explained in \code{data}.}
 
-\item{.by}{String denoting whether the moving window should be taken with 
+\item{thin}{Integer denoting a thinning factor. When provided, every
+\code{thin}-th row is returned after binning (e.g. \code{thin = 2} keeps
+every second binned row, \code{thin = 4} every fourth). Defaults to
+\code{NULL}, returning all rows.}
+
+\item{.by}{String denoting whether the moving window should be taken with
 respect to a given grouping variable. Defaults to \code{NULL}.}
 }
 \value{
@@ -36,16 +41,16 @@ Binned dataframe with a similar structure as \code{data}
 }
 \description{
 Summarize observations within a given time window, typically with the idea of
-having a single observation per bin. The Minds for Mobile Agents model assumes 
-that pedestrians take a walking decision every 0.5 seconds. This function 
-ensures that the data reflects this assumption by binning all available data 
-within that time-frame. Of course, this time window can be adjusted by the 
+having a single observation per bin. The Minds for Mobile Agents model assumes
+that pedestrians take a walking decision every 0.5 seconds. This function
+ensures that the data reflects this assumption by binning all available data
+within that time-frame. Of course, this time window can be adjusted by the
 user to fit their purposes.
 }
 \details{
 Note that if more variables than required are provided to this function, that
-these will get lost in translation. The reason is that it is difficult to 
-implement meaningful aggregation across the different types of data that a 
+these will get lost in translation. The reason is that it is difficult to
+implement meaningful aggregation across the different types of data that a
 user may supply.
 }
 \examples{

@@ -22,7 +22,10 @@ respectively. If this isn't the case, either change the column names in the
 data or specify the \code{cols} argument.}
 
 \item{model}{String denoting which model to use. Defaults to 
-\code{"constant_velocity"}, and is currently the only one that is implemented.}
+\code{"constant_velocity"}, and is currently the only one that is implemented.
+Can also contain a user-defined function that defines the model they use. 
+For restrictions on what this function should do, see the vignette on Filtering
+data.}
 
 \item{cols}{Named vector or named list containing the relevant column names
 in \code{data} if they didn't contain the prespecified column names 

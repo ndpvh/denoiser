@@ -20,7 +20,7 @@ Encoding: UTF-8
 Imports: 
     MASS,
     expm
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 Collate:
     'denoiser-package.R'
     'prepare.R'

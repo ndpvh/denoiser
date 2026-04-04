@@ -4,7 +4,7 @@
 \alias{constant_velocity}
 \title{Constant velocity model}
 \usage{
-constant_velocity(data, error = 0.031^2)
+constant_velocity(data, error = 0.031^2, x0 = NULL, P0 = NULL)
 }
 \arguments{
 \item{data}{A data.frame containing the data on which to base the parameters
@@ -17,6 +17,19 @@ value of the measurement error variance in the x- and y-direction. Should
 consist of either 1 or 2 values. If only 1 value is provided, the measurement
 error variance will be assumed to be the same for both dimensions. Defaults 
 to \code{0.031^2}, a value that we have obtained experimentally.}
+
+\item{x0}{Numeric vector containing the initial condition for the latent 
+state \eqn{\mathbf{x}}, containing a rough guess of the position and speed
+in the x- and y-dimension respectively and in that order. Defaults to 
+\code{NULL}, meaning that the initial condition represents the mean 
+observed values for each variable.}
+
+\item{P0}{Numeric matrix containing the initial condition for the certainty
+around the predictions of the movement equation around the latent position
+\eqn{'mathbf{x}}, where this covariance is defined for the same variables 
+and in the same order as \code{x0}. Defaults to \code{NULL}, meaning that the
+observed variances for each variable are placed in a diagonal covariance 
+matrix.}
 }
 \value{
 Named list containing all parameters relevant for the Kalman filter.
@@ -32,10 +45,10 @@ The constant velocity model is based on the assumption that velocity remains
 constant, so that acceleration can be put to 0. This means that we can use 
 the following movement equation to model changes in the positions, so that:
 
-\deqn{\begin{\bmatrix}
+\deqn{\begin{bmatrix}
   x \\
   y \\
-\end{bmatrix}_i = \begin{\bmatrix}
+\end{bmatrix}_i = \begin{bmatrix}
   x \\
   y \\
 \end{bmatrix}_{i - 1} + \begin{bmatrix}

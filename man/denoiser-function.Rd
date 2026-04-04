@@ -11,6 +11,7 @@ denoiser(
   binned = FALSE,
   span = 0.5,
   fx = mean,
+  thin = NULL,
   ...
 )
 }
@@ -40,11 +41,15 @@ in the \code{"time"} variable. Defaults to \code{0.5}. Ignored when
 \code{binned} is \code{FALSE}.}
 
 \item{fx}{Function to execute on the data that falls within the bin. Will be
-executed on the \code{"x"} and \code{"y"} columns separately and should ouput 
+executed on the \code{"x"} and \code{"y"} columns separately and should ouput
 only a single value. Defaults to the function \code{\link[base]{mean()}}.
 Ignored when \code{binned} is \code{FALSE}.}
 
-\item{...}{Additional arguments defining the Kalman filter to employ for 
+\item{thin}{Integer denoting a thinning factor. When provided, every
+\code{thin}-th row is returned after any filtering and binning. Defaults to
+\code{NULL}.}
+
+\item{...}{Additional arguments defining the Kalman filter to employ for
 filtering. See \code{\link[denoiser]{kalman_filter()}}.}
 }
 \value{
