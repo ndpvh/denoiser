@@ -1,40 +1,44 @@
 #' Bin observations
-#' 
+#'
 #' Summarize observations within a given time window, typically with the idea of
-#' having a single observation per bin. The Minds for Mobile Agents model assumes 
-#' that pedestrians take a walking decision every 0.5 seconds. This function 
-#' ensures that the data reflects this assumption by binning all available data 
-#' within that time-frame. Of course, this time window can be adjusted by the 
+#' having a single observation per bin. The Minds for Mobile Agents model assumes
+#' that pedestrians take a walking decision every 0.5 seconds. This function
+#' ensures that the data reflects this assumption by binning all available data
+#' within that time-frame. Of course, this time window can be adjusted by the
 #' user to fit their purposes.
-#' 
+#'
 #' Note that if more variables than required are provided to this function, that
-#' these will get lost in translation. The reason is that it is difficult to 
-#' implement meaningful aggregation across the different types of data that a 
+#' these will get lost in translation. The reason is that it is difficult to
+#' implement meaningful aggregation across the different types of data that a
 #' user may supply.
-#' 
-#' @param data Dataframe that contains information on location (x- and 
-#' y-coordinates) and the time at which the measurement was taken. By default, 
-#' \code{\link[denoiser]{bin()}} will assume that this information is contained 
-#' within the columns \code{"x"}, \code{"y"}, and \code{"time"} respectively. 
-#' If this isn't the case, either change the column names in the data or specify 
+#'
+#' @param data Dataframe that contains information on location (x- and
+#' y-coordinates) and the time at which the measurement was taken. By default,
+#' \code{\link[denoiser]{bin()}} will assume that this information is contained
+#' within the columns \code{"x"}, \code{"y"}, and \code{"time"} respectively.
+#' If this isn't the case, either change the column names in the data or specify
 #' the \code{cols} argument.
 #' @param span Numeric denoting the size of the bins. Will pertain to the values
 #' in the \code{"time"} variable. Defaults to \code{0.5}.
 #' @param fx Function to execute on the data that falls within the bin. Will be
-#' executed on the \code{"x"} and \code{"y"} columns separately and should ouput 
+#' executed on the \code{"x"} and \code{"y"} columns separately and should ouput
 #' only a single value. Defaults to the function \code{\link[base]{mean()}}.
 #' @param cols Named vector or named list containing the relevant column names
-#' in \code{data} if they didn't contain the prespecified column names 
-#' \code{"time"}, \code{"x"}, and \code{"y"}. The labels should conform to these 
-#' prespecified column names and the values given to these locations should 
-#' contain the corresponding column names in that dataset. Defaults to 
+#' in \code{data} if they didn't contain the prespecified column names
+#' \code{"time"}, \code{"x"}, and \code{"y"}. The labels should conform to these
+#' prespecified column names and the values given to these locations should
+#' contain the corresponding column names in that dataset. Defaults to
 #' \code{NULL}, therefore assuming the structure explained in \code{data}.
-#' @param .by String denoting whether the moving window should be taken with 
+#' @param thin Integer denoting a thinning factor. When provided, every
+#' \code{thin}-th row is returned after binning (e.g. \code{thin = 2} keeps
+#' every second binned row, \code{thin = 4} every fourth). Defaults to
+#' \code{NULL}, returning all rows.
+#' @param .by String denoting whether the moving window should be taken with
 #' respect to a given grouping variable. Defaults to \code{NULL}.
-#' 
+#'
 #' @return Binned dataframe with a similar structure as \code{data}
-#' 
-#' @examples 
+#'
+#' @examples
 #' # Generate data for illustration purposes
 #' data <- data.frame(
 #'   X = rnorm(100),
@@ -42,7 +46,7 @@
 #'   seconds = rep(1:50, times = 2) / 10,
 #'   tag = rep(1:2, each = 50)
 #' )
-#' 
+#'
 #' # Bin the data together by taking the average for each second
 #' bin(
 #'   data,
@@ -55,12 +59,13 @@
 #'   ),
 #'   .by = "tag"
 #' )
-#' 
-#' @export 
-bin <- function(data, 
-                span = 0.5, 
+#'
+#' @export
+bin <- function(data,
+                span = 0.5,
                 fx = mean,
                 cols = NULL,
+                thin = NULL,
                 .by = NULL) {
 
     # Prepare the data for the analysis
@@ -76,20 +81,20 @@ bin <- function(data,
 
     # Instantiate a mock data.frame. Will be updated repeatedly in the loops
     mock <- data.frame(
-        time = 0, 
-        id = 0, 
+        time = 0,
+        id = 0,
         x = 0,
         y = 0
     )
 
-    # Go over each of the data points and smooth the data using the moving 
-    # window. We dispatch/loop over all the different possibilities in the 
-    # grouping variable, for each of which we will create an individual 
+    # Go over each of the data points and smooth the data using the moving
+    # window. We dispatch/loop over all the different possibilities in the
+    # grouping variable, for each of which we will create an individual
     # dataframe to be smoothed.
     #
     # Within this loop, we do the following:
     #   - Create a group-specific dataframe
-    #   - Determine which time points to contain within each bin based on the 
+    #   - Determine which time points to contain within each bin based on the
     #     specified span
     #   - Apply the specified function to the data
     #   - Put these data in a list
@@ -100,7 +105,7 @@ bin <- function(data,
             data_i <- data[data$id == group[i], ]
 
             # Create a new time variable that will be robust against all types
-            # of weird data (as long as it's numeric). Makes the assignment of 
+            # of weird data (as long as it's numeric). Makes the assignment of
             # bins a bit easier to perform, as done immediately after.
             data_i$abs_time <- data_i$time - min(data_i$time)
             data_i$abs_time[data_i$abs_time == 0] <- 1e-2
@@ -131,6 +136,18 @@ bin <- function(data,
         }
     )
     data <- do.call("rbind", data)
+
+    # If thin is provided, keep every thin-th row after binning
+    if(!is.null(thin)) {
+        data <- lapply(
+            seq_along(unique(data$id)),
+            function(i) {
+                data_i <- data[data$id == unique(data$id)[i], ]
+                data_i[seq(1, nrow(data_i), by = thin), ]
+            }
+        )
+        data <- do.call("rbind", data)
+    }
 
     return(
         finalize(

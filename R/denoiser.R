@@ -29,10 +29,13 @@
 #' in the \code{"time"} variable. Defaults to \code{0.5}. Ignored when 
 #' \code{binned} is \code{FALSE}.
 #' @param fx Function to execute on the data that falls within the bin. Will be
-#' executed on the \code{"x"} and \code{"y"} columns separately and should ouput 
+#' executed on the \code{"x"} and \code{"y"} columns separately and should ouput
 #' only a single value. Defaults to the function \code{\link[base]{mean()}}.
 #' Ignored when \code{binned} is \code{FALSE}.
-#' @param ... Additional arguments defining the Kalman filter to employ for 
+#' @param thin Integer denoting a thinning factor. When provided, every
+#' \code{thin}-th row is returned after any filtering and binning. Defaults to
+#' \code{NULL}.
+#' @param ... Additional arguments defining the Kalman filter to employ for
 #' filtering. See \code{\link[denoiser]{kalman_filter()}}.
 #' 
 #' @return Smoothed and/or binned \code{data.frame} with a similar structure as 
@@ -79,17 +82,18 @@
 #' @rdname denoiser-function
 #' 
 #' @export 
-denoiser <- function(data, 
+denoiser <- function(data,
                      cols = NULL,
                      .by = NULL,
                      binned = FALSE,
-                     span = 0.5, 
-                     fx = mean, 
+                     span = 0.5,
+                     fx = mean,
+                     thin = NULL,
                      ...) {
-    
+
     # Perform the Kalman filter to smooth the data
     data <- kalman_filter(
-        data, 
+        data,
         cols = cols,
         .by = .by,
         ...
@@ -98,12 +102,25 @@ denoiser <- function(data,
     # If asked for, also bin the data
     if(binned) {
         data <- bin(
-            data, 
+            data,
             cols = cols,
             .by = .by,
             span = span,
             fx = fx
         )
+    }
+
+    # If asked for, thin the data last
+    if(!is.null(thin)) {
+        if(!is.null(.by)) {
+            groups <- unique(data[, .by])
+            data <- do.call("rbind", lapply(groups, function(g) {
+                data_g <- data[data[, .by] == g, ]
+                data_g[seq(1, nrow(data_g), by = thin), ]
+            }))
+        } else {
+            data <- data[seq(1, nrow(data), by = thin), ]
+        }
     }
 
     return(data)
