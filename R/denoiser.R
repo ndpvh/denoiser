@@ -5,9 +5,9 @@
 #' use of two steps: The data will go through a Kalman filter and will then be 
 #' binned, both according to the specifications of the user (see 
 #' \code{\link[denoiser]{kalman_filter()}} and \code{\link[denoiser]{bin()}}).
-#' Note that only the first step is mandatory and that it's left up to the user
-#' whether they would also like to bin their data through specifying the 
-#' argument \code{binned}.
+#' Note that the first step occurs by default, and that it's left up to the user
+#' whether they would also like to bin or thin their data through specifying the
+#' arguments \code{binned} or \code{thin}.
 #' 
 #' @param data Dataframe that contains information on location (x- and 
 #' y-coordinates) and the time at which the measurement was taken. By default, 
