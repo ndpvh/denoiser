@@ -156,8 +156,11 @@ denoiser <- function(data,
                 g <- groups[[gi]]
                 d <- if(!is.null(by_internal)) data[data[[by_internal]] == g, ] else data
                 d <- d[order(d$time), ]
+                time_step <- min(diff(d$time))
+                expected_size <- round(span / time_step)
                 out <- lapply(seq_len(nrow(d)), function(i) {
                     window <- d[d$time >= d$time[i] & d$time < d$time[i] + span, ]
+                    if(nrow(window) < expected_size) return(NULL)
                     row <- data.frame(time = mean(window$time),
                                       x    = fx(window$x),
                                       y    = fx(window$y))
