@@ -9,45 +9,42 @@ denoiser(
   cols = NULL,
   .by = NULL,
   kalman = TRUE,
-  binned = FALSE,
-  span = 0.5,
+  span = NULL,
   fx = mean,
   thin = NULL,
   ...
 )
 }
 \arguments{
-\item{data}{Dataframe that contains information on location (x- and 
-y-coordinates) and the time at which the measurement was taken. By default, 
-\code{\link[denoiser]{denoiser()}} will assume that this information is 
-contained within the columns \code{"x"}, \code{"y"}, and \code{"time"} 
-respectively. If this isn't the case, either change the column names in the 
+\item{data}{Dataframe that contains information on location (x- and
+y-coordinates) and the time at which the measurement was taken. By default,
+\code{\link[denoiser]{denoiser()}} will assume that this information is
+contained within the columns \code{"x"}, \code{"y"}, and \code{"time"}
+respectively. If this isn't the case, either change the column names in the
 data or specify the \code{cols} argument.}
 
 \item{cols}{Named vector or named list containing the relevant column names
-in \code{data} if they do not conform to the prespecified column names 
-\code{"time"}, \code{"x"}, and \code{"y"}. The labels should conform to these 
-prespecified column names and the values given to these locations should 
-contain the corresponding column names in that dataset. Defaults to 
+in \code{data} if they do not conform to the prespecified column names
+\code{"time"}, \code{"x"}, and \code{"y"}. The labels should conform to these
+prespecified column names and the values given to these locations should
+contain the corresponding column names in that dataset. Defaults to
 \code{NULL}, therefore assuming the structure explained in \code{data}.}
 
-\item{.by}{String denoting whether the moving window should be taken with 
+\item{.by}{String denoting whether the moving window should be taken with
 respect to a given grouping variable. Defaults to \code{NULL}.}
 
 \item{kalman}{Logical denoting whether to apply the Kalman filter
 (\code{TRUE}) or skip it (\code{FALSE}). Defaults to \code{TRUE}.}
 
-\item{binned}{Logical denoting whether to also bin the data (\code{TRUE}) or
-to leave the data unbinned (\code{FALSE}). Defaults to \code{FALSE}.}
-
-\item{span}{Numeric denoting the size of the bins. Will pertain to the values
-in the \code{"time"} variable. Defaults to \code{0.5}. Ignored when 
-\code{binned} is \code{FALSE}.}
+\item{span}{Numeric denoting the size of the bins for binning the data. Will
+pertain to the values in the \code{"time"} variable. When \code{NULL}, no
+binning is performed. Must be a number or \code{NULL}. Defaults to
+\code{NULL}.}
 
 \item{fx}{Function to execute on the data that falls within the bin. Will be
 executed on the \code{"x"} and \code{"y"} columns separately and should ouput
 only a single value. Defaults to the function \code{\link[base]{mean()}}.
-Ignored when \code{binned} is \code{FALSE}.}
+Ignored when \code{span} is \code{NULL}.}
 
 \item{thin}{Integer denoting a thinning factor. When provided, every
 \code{thin}-th row is returned after any filtering and binning. Defaults to
@@ -57,18 +54,18 @@ Ignored when \code{binned} is \code{FALSE}.}
 filtering. See \code{\link[denoiser]{kalman_filter()}}.}
 }
 \value{
-Smoothed and/or binned \code{data.frame} with a similar structure as 
+Smoothed and/or binned \code{data.frame} with a similar structure as
 \code{data}
 }
 \description{
-The \code{\link[denoiser]{denoiser()}} function takes in a dataset and 
-attempts to filter out the inherent measurement error. The function makes 
-use of two steps: The data will go through a Kalman filter and will then be 
-binned, both according to the specifications of the user (see 
+The \code{\link[denoiser]{denoiser()}} function takes in a dataset and
+attempts to filter out the inherent measurement error. The function makes
+use of two steps: The data will go through a Kalman filter and will then be
+binned, both according to the specifications of the user (see
 \code{\link[denoiser]{kalman_filter()}} and \code{\link[denoiser]{bin()}}).
-Note that only the first step is mandatory and that it's left up to the user
-whether they would also like to bin their data through specifying the 
-argument \code{binned}.
+Note that the first step occurs by default, and that it's left up to the user
+whether they would also like to bin or thin their data through specifying the
+arguments \code{span} or \code{thin}.
 }
 \examples{
 # Generate data for illustration purposes. Movement in circular motion at a
@@ -84,10 +81,10 @@ data <- data.frame(
   tag = rep(1:2, each = 50)
 )
 
-# Use the denoiser function to get rid of the noise. Kalman filter is 
-# defined with the constant velocity model and an error variance of 0.01. 
-# Binning is performed with a span of 5 seconds and using the mean of the 
-# interval as representatitive of the position within that interval.
+# Use the denoiser function to get rid of the noise. Kalman filter is
+# defined with the constant velocity model and an error variance of 0.01.
+# Binning is performed with a span of 5 seconds and using the mean of the
+# interval as representative of the position within that interval.
 denoiser(
   data,
   cols = c(
@@ -98,7 +95,6 @@ denoiser(
   .by = "tag",
   model = "constant_velocity",
   error = 0.01,
-  binned = TRUE,
   span = 5,
   fx = mean
 )
