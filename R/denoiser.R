@@ -94,12 +94,20 @@ denoiser <- function(data,
                      thin = NULL,
                      ...) {
 
+    # Always prepare the data upfront so cols renaming takes effect regardless
+    # of which steps are run. Sub-functions are called with cols = NULL and
+    # .by = "id" since columns are already in standard form after prepare().
+    preparation <- prepare(data, cols = cols, .by = .by)
+    data <- preparation$data
+    saved_cols <- preparation$cols
+    by_internal <- if(!is.null(.by)) "id" else NULL
+
     # Perform the Kalman filter to smooth the data
     if(kalman) {
         data <- kalman_filter(
             data,
-            cols = cols,
-            .by = .by,
+            cols = NULL,
+            .by = by_internal,
             ...
         )
     }
@@ -108,8 +116,8 @@ denoiser <- function(data,
     if(binned) {
         data <- bin(
             data,
-            cols = cols,
-            .by = .by,
+            cols = NULL,
+            .by = by_internal,
             span = span,
             fx = fx
         )
@@ -117,10 +125,10 @@ denoiser <- function(data,
 
     # If asked for, thin the data last
     if(!is.null(thin)) {
-        if(!is.null(.by)) {
-            groups <- unique(data[, .by])
+        if(!is.null(by_internal)) {
+            groups <- unique(data[, by_internal])
             data <- do.call("rbind", lapply(groups, function(g) {
-                data_g <- data[data[, .by] == g, ]
+                data_g <- data[data[, by_internal] == g, ]
                 data_g[seq(1, nrow(data_g), by = thin), ]
             }))
         } else {
@@ -128,5 +136,5 @@ denoiser <- function(data,
         }
     }
 
-    return(data)
+    return(finalize(data, cols = saved_cols, .by = .by))
 }
