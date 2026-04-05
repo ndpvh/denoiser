@@ -104,13 +104,9 @@ bin <- function(data,
             # Get the data specific to the group (if .by is not NULL)
             data_i <- data[data$id == group[i], ]
 
-            # Create a new time variable that will be robust against all types
-            # of weird data (as long as it's numeric). Makes the assignment of
-            # bins a bit easier to perform, as done immediately after.
-            data_i$abs_time <- data_i$time - min(data_i$time)
-            data_i$abs_time[data_i$abs_time == 0] <- 1e-2
-
-            data_i$bin_number <- ceiling(data_i$abs_time / span)
+            # Assign bin numbers using floor so that each bin covers exactly
+            # one span-length interval starting from the first observation
+            data_i$bin_number <- floor((data_i$time - min(data_i$time)) / span) + 1
 
             # Loop over the different bins
             bins <- unique(data_i$bin_number)

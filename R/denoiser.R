@@ -116,6 +116,26 @@ denoiser <- function(data,
 
     # If span is provided, bin the data
     if(!is.null(span)) {
+        # Identify extra columns beyond time, x, y, and the grouping variable
+        standard <- c("time", "x", "y", by_internal)
+        extra_cols <- setdiff(colnames(data), standard)
+
+        # Before binning, take the first value of extra columns per bin per
+        # group so they can be reattached after binning
+        if(length(extra_cols) > 0) {
+            groups <- if(!is.null(by_internal)) unique(data[[by_internal]]) else list(NULL)
+            extra <- do.call("rbind", lapply(seq_along(groups), function(gi) {
+                g <- groups[[gi]]
+                d <- if(!is.null(by_internal)) data[data[[by_internal]] == g, ] else data
+                d <- d[order(d$time), ]
+                bin_num <- floor((d$time - min(d$time)) / span) + 1
+                do.call("rbind", lapply(unique(bin_num), function(b) {
+                    d[which(bin_num == b)[1], extra_cols, drop = FALSE]
+                }))
+            }))
+            rownames(extra) <- NULL
+        }
+
         data <- bin(
             data,
             cols = NULL,
@@ -123,6 +143,10 @@ denoiser <- function(data,
             span = span,
             fx = fx
         )
+
+        if(length(extra_cols) > 0) {
+            data <- cbind(data, extra)
+        }
     }
 
     # If asked for, thin the data last
@@ -138,7 +162,5 @@ denoiser <- function(data,
         }
     }
 
-    # Only finalize columns that still exist (bin() drops extra columns)
-    existing <- names(saved_cols)[names(saved_cols) %in% colnames(data)]
-    return(finalize(data, cols = saved_cols[existing], .by = .by))
+    return(finalize(data, cols = saved_cols[names(saved_cols) %in% colnames(data)], .by = .by))
 }
