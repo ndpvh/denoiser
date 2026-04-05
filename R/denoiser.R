@@ -33,6 +33,13 @@
 #' executed on the \code{"x"} and \code{"y"} columns separately and should ouput
 #' only a single value. Defaults to the function \code{\link[base]{mean()}}.
 #' Ignored when \code{span} is \code{NULL}.
+#' @param boxcar Logical denoting whether to replace non-overlapping binning
+#' with a moving boxcar average (\code{TRUE}). When \code{TRUE} and \code{span}
+#' is not \code{NULL}, a sliding window of width \code{span} is advanced one
+#' observation at a time, outputting the mean of all observations within the
+#' window. Windows containing only one observation (at the end of the series)
+#' are dropped. Ignored when \code{span} is \code{NULL}. Defaults to
+#' \code{FALSE}.
 #' @param thin Integer denoting a thinning factor. When provided, every
 #' \code{thin}-th row is returned after any filtering and binning. Defaults to
 #' \code{NULL}.
@@ -88,6 +95,7 @@ denoiser <- function(data,
                      kalman = TRUE,
                      span = NULL,
                      fx = mean,
+                     boxcar = FALSE,
                      thin = NULL,
                      ...) {
 
@@ -114,38 +122,52 @@ denoiser <- function(data,
         )
     }
 
-    # If span is provided, bin the data
+    # If span is provided, bin or boxcar-smooth the data
     if(!is.null(span)) {
         # Identify extra columns beyond time, x, y, and the grouping variable
         standard <- c("time", "x", "y", by_internal)
         extra_cols <- setdiff(colnames(data), standard)
+        groups <- if(!is.null(by_internal)) unique(data[[by_internal]]) else list(NULL)
 
-        # Before binning, take the first value of extra columns per bin per
-        # group so they can be reattached after binning
-        if(length(extra_cols) > 0) {
-            groups <- if(!is.null(by_internal)) unique(data[[by_internal]]) else list(NULL)
-            extra <- do.call("rbind", lapply(seq_along(groups), function(gi) {
+        if(!boxcar) {
+            # Non-overlapping bins: take first value of extra cols per bin
+            if(length(extra_cols) > 0) {
+                extra <- do.call("rbind", lapply(seq_along(groups), function(gi) {
+                    g <- groups[[gi]]
+                    d <- if(!is.null(by_internal)) data[data[[by_internal]] == g, ] else data
+                    d <- d[order(d$time), ]
+                    bin_num <- floor((d$time - min(d$time)) / span) + 1
+                    do.call("rbind", lapply(unique(bin_num), function(b) {
+                        d[which(bin_num == b)[1], extra_cols, drop = FALSE]
+                    }))
+                }))
+                rownames(extra) <- NULL
+            }
+
+            data <- bin(data, cols = NULL, .by = by_internal, span = span, fx = fx)
+
+            if(length(extra_cols) > 0) {
+                data <- cbind(data, extra)
+            }
+        } else {
+            # Moving boxcar average: sliding window advancing one observation
+            # at a time; windows with fewer than 2 observations are dropped
+            data <- do.call("rbind", lapply(seq_along(groups), function(gi) {
                 g <- groups[[gi]]
                 d <- if(!is.null(by_internal)) data[data[[by_internal]] == g, ] else data
                 d <- d[order(d$time), ]
-                bin_num <- floor((d$time - min(d$time)) / span) + 1
-                do.call("rbind", lapply(unique(bin_num), function(b) {
-                    d[which(bin_num == b)[1], extra_cols, drop = FALSE]
-                }))
+                out <- lapply(seq_len(nrow(d)), function(i) {
+                    window <- d[d$time >= d$time[i] & d$time < d$time[i] + span, ]
+                    row <- data.frame(time = mean(window$time),
+                                      x    = fx(window$x),
+                                      y    = fx(window$y))
+                    if(!is.null(by_internal)) row[[by_internal]] <- g
+                    if(length(extra_cols) > 0)
+                        row[extra_cols] <- window[1, extra_cols, drop = FALSE]
+                    row
+                })
+                do.call("rbind", out)
             }))
-            rownames(extra) <- NULL
-        }
-
-        data <- bin(
-            data,
-            cols = NULL,
-            .by = by_internal,
-            span = span,
-            fx = fx
-        )
-
-        if(length(extra_cols) > 0) {
-            data <- cbind(data, extra)
         }
     }
 
