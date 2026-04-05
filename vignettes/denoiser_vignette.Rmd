@@ -347,7 +347,7 @@ Finally, the function should output a named list containing values for `"z"` (th
 
 ## Binning the data 
 
-If the user wishes, they can also bin the data after applying the Kalman filter. They can do so by setting `binned` to `TRUE` and specifying a certain range of the bins (`span`) and a given function to apply to the data within the bin (`fx`). For example, assuming `time` is specified on the seconds level, then we can bin together data with a span of 5 seconds and by taking a mean in the following way:
+If the user wishes, they can also bin the data after applying the Kalman filter. They can do so by specifying a certain range of the bins (`span`) and a given function to apply to the data within the bin (`fx`). For example, assuming `time` is specified on the seconds level, then we can bin together data with a span of 5 seconds and by taking a mean in the following way:
 
 ```{r, dev = "jpeg", fig.dim = c(10, 10), out.width = "75%"}
 #| fig.alt: >
@@ -361,7 +361,6 @@ denoised <- denoiser(
   .by = "person",
   model = "constant_velocity",
   error = 0.5,
-  binned = TRUE,
   span = 5,
   fx = mean
 )
