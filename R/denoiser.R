@@ -138,5 +138,7 @@ denoiser <- function(data,
         }
     }
 
-    return(finalize(data, cols = saved_cols, .by = .by))
+    # Only finalize columns that still exist (bin() drops extra columns)
+    existing <- names(saved_cols)[names(saved_cols) %in% colnames(data)]
+    return(finalize(data, cols = saved_cols[existing], .by = .by))
 }
